@@ -1,15 +1,8 @@
 import express from 'express';
-import multer from 'multer';
-import gridfs from 'gridfs-stream';
-import mongoose from 'mongoose';
 import PostModel from '../models/PostModel.js';
-const connection = mongoose.connection;
-let gfs;
-connection.once('open', () => {
-  gfs = gridfs(connection.db, mongoose.mongo);
-});
 
-const upload = multer({ storage: multer.memoryStorage() });
+
+
 
 export const getPosts = async (req, res) => {
   try {
