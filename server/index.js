@@ -19,6 +19,8 @@ mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: tr
 
 mongoose.set('useFindAndModify', false);
 
-
+app.get("/",(req,res)=>{
+  res.json("hello");
+})
 app.use('/posts', postRoutes);
 app.use('/user', userRoutes);
