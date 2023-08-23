@@ -4,9 +4,11 @@ import { Google, Login } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getgoogleuser, googlesignup, signin, signup } from '../../actions/Auth'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { LoginSocialGoogle } from "reactjs-social-login";
-const initialdata = { username: '', firstname: '', lastname: '', email: '', password: '', confirmpassword: '',picture:'' }
+import LoadingSpinner from '../../components/Spinner/Spinner';
+const initialdata = { username: '', firstname: '', lastname: '', email: '', password: '', confirmpassword: '', picture: '' }
 const Authpage = () => {
 
 
@@ -17,27 +19,41 @@ const Authpage = () => {
   const googleuser = useSelector((state) => state.authReducer.googleuser);
   const error = useSelector((state) => state.authReducer.error);
   const [googledata, setgoogledata] = useState({})
-  const [Error,setError]=useState(error);
-  //console.log(error)
+  const [Error, setError] = useState(error);
+  console.log(error)
+  useEffect(() => {
+    if (error)
+      setError(error)
+  }, [error])
+  const [loading,setloading]=useState(false);
   const handlesubmit = (e) => {
     e.preventDefault(); // Prevent the form from submitting automatically
+    setloading(true);
+    console.log(loading)
 
     if (isSignin) {
       // Validate for Sign In
       if (!formdata.username || !formdata.password) {
         setError({ message: 'Please enter username and password.' });
+        setloading(false);
         return;
       }
-      dispatch(signin(formdata, navigate));
+      dispatch(signin(formdata, navigate)).then(()=>{
+        setloading(false);
+      });
     } else {
       // Validate for Sign Up
       if (!formdata.username || !formdata.firstname || !formdata.lastname || !formdata.email || !formdata.password || !formdata.confirmpassword) {
         setError({ message: 'Please fill all the required fields.' });
+        setloading(false);
+
         return;
       }
 
       if (!isValidEmail(formdata.email)) {
         setError({ message: 'Please enter a valid email address.' });
+        setloading(false);
+
         return;
       }
 
@@ -46,15 +62,22 @@ const Authpage = () => {
           message:
             'Password must contain at least 8 characters, including 1 capital letter and 1 special character.',
         });
+        setloading(false);
+
         return;
       }
 
       if (formdata.password !== formdata.confirmpassword) {
         setError({ message: 'Passwords do not match.' });
+        setloading(false);
+
         return;
       }
 
-      dispatch(signup(formdata, setisSignin, isSignin));
+      dispatch(signup(formdata, setisSignin, isSignin)).then(()=>{
+        setloading(false);
+
+      });
     }
   };
 
@@ -68,15 +91,15 @@ const Authpage = () => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
   };
-  const handlegooglesubmit = async ()=>{
-    const {email,given_name,family_name,picture}=googledata;
-    formdata.email=email;
-    formdata.firstname=given_name;
-    formdata.lastname=family_name;
-    formdata.picture=picture;
-   
-    dispatch(googlesignup(formdata,navigate))
-  
+  const handlegooglesubmit = async () => {
+    const { email, given_name, family_name, picture } = googledata;
+    formdata.email = email;
+    formdata.firstname = given_name;
+    formdata.lastname = family_name;
+    formdata.picture = picture;
+
+    dispatch(googlesignup(formdata, navigate))
+
   }
   const handlechange = (e) => {
     setformdata({ ...formdata, [e.target.name]: e.target.value })
@@ -88,18 +111,34 @@ const Authpage = () => {
       error.message = '';
   }
   useEffect(() => {
-    if(googleuser.check===1)
+   
+    if (Error)
     {
-      
-      const data={result:{},token:""};
-      data.result=googleuser.result;
-      data.token=googleuser.token;
+      toast.error(Error.message, {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "colored",
+        });
+    }
+     
+  }, [Error])
+  useEffect(() => {
+    if (googleuser.check === 1) {
+
+      const data = { result: {}, token: "" };
+      data.result = googleuser.result;
+      data.token = googleuser.token;
       dispatch({ type: 'AUTH_SUCCESS', data });
-      dispatch({type:'CLEAR_GOOGLE'})
+      dispatch({ type: 'CLEAR_GOOGLE' })
       navigate('/')
     }
   }, [googleuser.check])
- 
+
   console.log(googleuser);
   console.log(Error)
   useEffect(() => {
@@ -113,9 +152,21 @@ const Authpage = () => {
     }
   }, [Error]);
   return (
-    <div className='h-screen w-screen flex flex-col font-poppins  items-center '>
-      {googleuser.check === 0 || googleuser.check===1 ? (
-        <div className='h-[500px] w-[500px]'>
+    <div className='h-screen   py-10 transition ease-in-out duration-1000 w-screen flex flex-col font-poppins  items-center '>
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      {googleuser.check === 0 || googleuser.check === 1 ? (
+        <div className=' bg-[--black3] px-5 pb-5 shadow-sm shadow-white   w-[500px]'>
           <h3 className='flex justify-center text-[35px] m-5 font-poppins font-bold'>
             <div className=' w-[30px] h-full'>
               <LockOpenIcon className='scale-125' />
@@ -127,45 +178,54 @@ const Authpage = () => {
           </h3>
 
           {isSignin === true ? (
-            <form >
-              <div className='flex flex-col p-2 gap-2'>
+            <form className='transition-all  duration-300 ease-in-out'>
+              <div className='flex  flex-col p-2 gap-2'>
 
-                <input value={formdata.username} name='username' onChange={handlechange} type="text" className='w-full rounded-lg h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Username*' />
-                <input value={formdata.password} name='password' onChange={handlechange} type="password" className='w-full rounded-lg h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Password*' />
+                <input value={formdata.username} name='username' onChange={handlechange} type="text" className='w-full  h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Username*' />
+                <input value={formdata.password} name='password' onChange={handlechange} type="password" className='w-full  h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Password*' />
               </div>
             </form>
           ) : (
-            <form>
+            <form className='duration-300 ease-in-out'>
               <div className='flex flex-col p-2 gap-2'>
-                <input name='username' onChange={handlechange} type="text" className='w-full rounded-lg h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Username*' />
+                <input name='username' onChange={handlechange} type="text" className='w-full  h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Username*' />
 
                 <div className='flex gap-2 flex-1'>
-                  <input name='firstname' onChange={handlechange} type="text" required={true} className='w-full rounded-lg h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='First Name*' />
-                  <input name='lastname' onChange={handlechange} type="text" required={true} className='w-full rounded-lg h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Last Name*' />
+                  <input name='firstname' onChange={handlechange} type="text" required={true} className='w-full  h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='First Name*' />
+                  <input name='lastname' onChange={handlechange} type="text" required={true} className='w-full h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Last Name*' />
                 </div>
                 <div>
 
-                  <input name='email' onChange={handlechange} type="email" required={true} className='w-full rounded-lg h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Email*' />
+                  <input name='email' onChange={handlechange} type="email" required={true} className='w-full h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Email*' />
 
                 </div>
                 <div className='flex flex-col gap-2'>
-                  <input name='password' onChange={handlechange} type="password" required={true} className='w-full rounded-lg h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Password*' />
-                  <input name='confirmpassword' onChange={handlechange} type="password" required={true} className='w-full rounded-lg h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Confirm Password*' />
+                  <input name='password' onChange={handlechange} type="password" required={true} className='w-full h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Password*' />
+                  <input name='confirmpassword' onChange={handlechange} type="password" required={true} className='w-full h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Confirm Password*' />
 
                 </div>
 
               </div>
             </form>
           )}
-          {Error?.message?.length > 0 && (
+          {/* {Error?.message?.length > 0 && (
             <div className='flex justify-end px-2 text-red-600'>
-              *{Error.message}
+              *{Error.message || Error}
             </div>
-          )}
+          )} */}
 
           <div className='p-2 flex flex-col'>
-            <button onClick={handlesubmit} className='w-full h-[60px] rounded-lg bg-blue-900 text-[24px] mt-2'>
-              {isSignin == true ? ("Sign In") : ("Sign Up")}
+            <button onClick={handlesubmit} className='w-full h-[60px] bg-blue-900 text-[24px] mt-2'>
+              {loading ===true? (
+                <div className='flex justify-center'>
+                  <LoadingSpinner/>
+                </div>
+              ):(
+                <div>
+                {isSignin == true ? ("Sign In") : ("Sign Up")}
+                </div>
+              )}
+              
 
             </button>
             <LoginSocialGoogle
@@ -176,12 +236,11 @@ const Authpage = () => {
               onResolve={async ({ data }) => {
                 const { email } = await data;
                 setgoogledata(data);
-                if (email)
-                {
+                if (email) {
                   dispatch(getgoogleuser(email));
-                 
+
                 }
-                                  
+
               }}
               onReject={(err) => {
                 console.log(err);
@@ -189,7 +248,7 @@ const Authpage = () => {
             >
               <button
 
-                className="w-full h-[60px] rounded-lg bg-red-500 text-[24px] mt-2 flex items-center justify-center"
+                className="w-full h-[60px] bg-red-500 text-[24px] mt-2 flex items-center justify-center"
               // style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 <Google style={{ marginRight: '8px' }} /> {isSignin == true ? "Sign In " : "Sign up "}with Google
@@ -224,11 +283,11 @@ const Authpage = () => {
               </div>
               Create User
             </h3>
-            <input name='username' onChange={handlechange} type="text" className='w-full rounded-lg h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Username*' />
-            <input name='password' onChange={handlechange} type="password" className='w-full rounded-lg h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Password*' />
-            <input name='confirmpassword' onChange={handlechange} type="password" required={true} className='w-full rounded-lg h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Confirm Password*' />
+            <input name='username' onChange={handlechange} type="text" className='w-full h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Username*' />
+            <input name='password' onChange={handlechange} type="password" className='w-full h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Password*' />
+            <input name='confirmpassword' onChange={handlechange} type="password" required={true} className='w-full h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Confirm Password*' />
             <button onClick={handlegooglesubmit} className='w-full h-[60px] rounded-lg bg-blue-900 text-[24px] mt-2'>
-                Sign Up
+              Sign Up
             </button>
 
           </div>

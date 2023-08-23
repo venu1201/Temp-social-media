@@ -15,6 +15,7 @@ import Blogbox from './Components/Blogbox'
 import Popup from './Components/Popup'
 import LoadingSpinner from '../../components/Spinner/Spinner'
 import { requesting } from '../../actions/user'
+import Masonry from "react-responsive-masonry"
 
 const Profile = () => {
   const { user } = useParams();
@@ -22,8 +23,9 @@ const Profile = () => {
   const [isEdit, setisEdit] = useState(false);
   const location = useLocation();
   const [str, setstr] = useState("ADD")
+  const [showremove,setshowremove]=useState(false);
   useEffect(() => {
-    console.log(localdata?.result?.username, user)
+
     if (localdata?.result?.username === user) {
       setisEdit(true);
     }
@@ -47,12 +49,20 @@ const Profile = () => {
   const [edit, setedit] = useState(false)
   const [showfollowers, setshowfollowers] = useState(false);
   const [showfollowing, setshowfollowing] = useState(false);
+  const [boolremove,setboolremove]=useState(1);
+  const [b,setb]=useState(false);
 
   useEffect(() => {
-    dispatch(getuserdetails(setuserdetails, user))
+    dispatch(getuserdetails(setuserdetails, user)).then(()=>{
+    })
     // getuserdetails(setuserdetails,username);
+    
 
-  }, [user, edit, location.path])
+  }, [user, edit,b, location.pathname,showfollowers,showfollowing])
+
+  const changeremove=()=>{
+    setboolremove(boolremove+1);
+  }
   const [userposts, setuserposts] = useState([]);
   useEffect(() => {
     if (userdetails)
@@ -62,7 +72,6 @@ const Profile = () => {
   const [loading,setloading]=useState(false);
   const handleclick = () => {
     setloading(true)
-    console.log(localdata?.result?.username,user,"hmmmmm");
     dispatch(requesting( user,localdata?.result))
       .then(() => {
         
@@ -74,13 +83,13 @@ const Profile = () => {
       });
   };
   return (
-    <div className=' relative  md:w-[75%] sm:w-[68%] ss:w-[80%] w-full ssm:w-[74%] ac:w-[78%] font-poppins text-white ss:h-full h-[90%]  '>
+    <div className=' relative  md:w-[75%] sm:w-[68%] ss:w-[80%] w-full ssm:w-[74%] ac:w-[78%] font-poppins text-white ss:h-full h-[80%]  '>
 
       {userdetails !== null ? (
-        <div className='h-full overflow-scroll w-full '>
-          <div className='flex  ms:flex-row flex-col ac:px-32 md:px-14 ssm:px-10 sm:px-8 mms:px-4 px-1 pt-10 ac:gap-10 md:gap-7 ssm:gap-3 gap-5'>
-            <div className='flex  mx-auto   justify-center items-center h-[200px]  md:min-w-[200px] ms:min-w-[180px] min-w-[180px] max-w-[180px]'>
-              <img className='object-fill h-full w-full rounded-md  shadow-md shadow-black' src={userdetails?.profilepicture || avatar} alt="" />
+        <div className='h-full  overflow-scroll w-full '>
+          <div className='flex px-1   ms:flex-row flex-col ac:px-32 md:px-14 ssm:px-10 sm:px-8 mms:px-4  pt-10 ac:gap-10 md:gap-7 ssm:gap-3 gap-5'>
+            <div className='flex  mx-auto    justify-center items-center h-[200px]  md:min-w-[200px] ms:min-w-[180px] min-w-[180px] max-w-[180px]'>
+              <img className='object-fill h-full w-full rounded-md  shadow-sm shadow-white' src={userdetails?.profilepicture || avatar} alt="" />
             </div>
             <div className='flex gap-1 ms:w-[60%] w-[100%]      flex-col pt-2 '>
               <h3 className='text-[30px] flex ms:justify-normal justify-center  w-full'>
@@ -97,7 +106,7 @@ const Profile = () => {
 
               {
                 userdetails?.bio?.length > 0 ? (
-                  <div className='text-[18px] flex ms:px-0 px-10 break-all  text-dimWhite mt-3'>
+                  <div className='text-[18px] flex ms:justify-normal justify-center items-center ms:px-0 px-10 break-all  text-dimWhite mt-3'>
                     {userdetails?.bio}
                   </div>
                 ) : (
@@ -133,7 +142,7 @@ const Profile = () => {
 
               </div>
               {!isEdit && (
-                <span className='flex  '>
+                <span className='flex ms:justify-normal justify-center  '>
                   {loading===false?(<span onClick={handleclick} className='text-sky-400 cursor-pointer'>
                     {str}
                   </span>):(
@@ -168,10 +177,10 @@ const Profile = () => {
           </div>
 
           {showfollowers && (
-            <Popup data={userdetails?.followers} name={"Followers"} setdefault={setshowfollowers} />
+            <Popup type={"followers"} b={setb} edit={isEdit} changeremove={changeremove} data={userdetails?.followers} name={"Followers"} setdefault={setshowfollowers} />
           )}
           {showfollowing && (
-            <Popup data={userdetails?.following} name={"Following"} setdefault={setshowfollowing} />
+            <Popup type={"following"} b={setb} edit={isEdit} changeremove={changeremove} data={userdetails?.following} name={"Following"} setdefault={setshowfollowing} />
           )}
           {edit && (
             <EditProfile userdetails={userdetails} setedit={setedit} />
@@ -181,7 +190,7 @@ const Profile = () => {
 
           </div>
           <div className={`w-full mt-5 mb-2 py-3 ms:px-5 px-1 flex justify-center`}>
-            <div className={`grid ssm:grid-cols-3 xs:grid-cols-2 grid-cols-1  ms:gap-6 gap-2 ${showposts === true ? "" : "hidden"} `}>
+            <div className={`grid ssm:grid-cols-3 mms:grid-cols-2 grid-cols-1  ms:gap-6 gap-2 ${showposts === true ? "" : "hidden"} `}>
               {userposts.map((post, index) => (
                 <Postbox data={post} key={index} />
               ))}
@@ -195,7 +204,7 @@ const Profile = () => {
 
         </div>
       ) : (
-        <div className='h-full w-full '>
+        <div className='h-full animate-pulse w-full '>
           <div className='flex px-32 pt-10 gap-10'>
             <div className='flex justify-center items-center h-[200px] bg-blue-800 w-[200px]'>
             </div>

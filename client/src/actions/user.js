@@ -21,6 +21,14 @@ export const requesting = (username,user,setcheck) => async (dispatch) => {
       console.log(errorMessage);
     }
   };
+  export const remove=(type,username,touser)=>async(dispatch)=>{
+    try {
+      console.log(type,username,touser)
+      const {data}=await api.remove(type,username,touser);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   export const removeascompletefriend=(username,touser)=>async(dispatch)=>{
     try {
       const {data}=await api.removeascompletefriend(username,touser);

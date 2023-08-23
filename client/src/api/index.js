@@ -15,7 +15,7 @@ export const updateuserdetails=(editdata,username)=>API.post(`/user/updateuserde
 export const removeascompletefriend=(username,touser)=>API.post(`/user/removeascomepletefriend/${username}`,touser);
 export const removeasfollower=(username,touser)=>API.post(`/user/removeasfollower/${username}`,touser);
 export const removeasfollowing=(username,touser)=>API.post(`/user/removeasfollowing/${username}`,touser);
-
+export const remove=(type,username,touser)=>API.post(`/user/remove/${type}/${username}`,touser);
 // export const fetchDataFromApi = async (url, params) => {
 //     try {
 //         const { data } = await axios.get(BASE_URL + url,params);
@@ -28,8 +28,8 @@ export const removeasfollowing=(username,touser)=>API.post(`/user/removeasfollow
 export const getposts =()=>API.get('/posts');
 export const createpost = (post)=>API.post('/posts/createpost',post);
 export const getpostsbyusername=(username)=> API.get(`/posts/byusername/${username}`)  
-
-
+export const likepost=(username,id)=> API.post(`/posts/likepost/${id}`,username);
+export const getpostdetails= (id)=>API.get(`/posts/getpostdetails/${id}`);
 
 // following
 

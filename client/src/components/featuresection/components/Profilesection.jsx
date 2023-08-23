@@ -23,13 +23,13 @@ const Profilesection = () => {
     navigate('/Auth');
   }
   return (
-    <div className='text-white '>
-      <div className='h-[70px] mt-4 w-full flex '>
-        <div onClick={() => navigate(`/Profile/${data?.result.username}`)} className='flex cursor-pointer md:gap-5 ssm:gap-2 h-full w-full items-center '>
-          <div className='flex  w-[50px] h-[50px]'>
-            <img className='object-fill h-[64px] min-w-[64px] rounded-full' src={userdetails?.profilepicture || avatar} alt="" />
+    <div className='text-white   '>
+      <div className='h-[250px] bg-[--black3] shadow-sm shadow-white py-3 w-full flex flex-col'>
+        <div onClick={() => navigate(`/Profile/${data?.result.username}`)} className='flex flex-col cursor-pointer  h-full w-full items-center '>
+          <div className='flex bg-white  w-[120px] h-[120px]'>
+            <img className='object-fill h-full min-w-full ' src={userdetails?.profilepicture || avatar} alt="" />
           </div>
-          <div className='ssm:w-[90px]  md:w-[120px] h-full flex flex-col gap-[2px] justify-center mt-3  ml-2'>
+          <div className='ssm:w-[90px]   md:w-[120px] mt-2 flex flex-col  justify-center items-center '>
             <h4 className=' h-[20px] ssm:max-w-[90px] md:max-w-[120px] overflow-hidden overflow-ellipsis'> {data?.result?.username}</h4>
             <div className=' h-[20px] ssm:max-w-[90px] md:max-w-[120px] overflow-hidden overflow-ellipsis'>
             {data?.result?.email}

@@ -12,7 +12,6 @@ const Switch = ({data,setshowposts}) => {
     return windowWidth;
   }
   const func=(size)=>{
-    console.log("console ",size);
     size=curr();
     if(size.current<330)
     {
@@ -31,7 +30,6 @@ const Switch = ({data,setshowposts}) => {
     }, 350);
     setshowposts((prev)=>!prev);
 };
-  console.log(position+"pxx")
   return (
     <div className='ss:w-[203px] xs:w-[163px] w-[133px]  rounded-2xl flex justify-center items-center bg-white h-[43px]'>
       <div className='relative ss:w-[200px] xs:w-[160px] w-[130px] h-full flex justify-evenly items-center'>

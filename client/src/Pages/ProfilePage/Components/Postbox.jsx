@@ -4,11 +4,12 @@ import { AiOutlineComment } from "react-icons/ai";
 import HeartSymbol from '../../../svg/Likebutton';
 
 const Postbox = ({ data }) => {
+    
     return (
-        <div className={`bg-black ${data?.selectedfile===null ? "hidden":""} mt-3 ac:w-[290px] md:w-[260px] ssm:w-[230px] sm:w-[275px] ss:w-[250px] ms:w-[230px] mms:w-[190px] xs:w-[175px] w-[230px] rounded-[12px]`}>
+        <div className={`bg-black  ${data?.selectedfile===null ? "hidden":""} mt-3 ac:w-[290px] md:w-[260px] ssm:w-[230px] sm:w-[275px] ss:w-[250px] ms:w-[230px] mms:w-[210px] xs:w-[280px] w-[230px] rounded-[12px]`}>
             <div className='  w-full flex flex-col items-center'>
 
-                <div className='w-full rounded-t-[12px]l md:h-[260px] ssm:h-[245px] ss:h-[260px] ms:h-[240px] xs:h-[230px] h-[250px]'>
+                <div className='w-full rounded-t-[12px]l md:h-[260px] ssm:h-[245px] ss:h-[260px] ms:h-[240px] xs:h-[280px] h-[250px]'>
                     <img className='h-full rounded-t-[12px] shadow-md w-full object-fit' src={data?.selectedfile} alt="" />
                 </div>
 

@@ -86,7 +86,6 @@ export const signup = async (req, res) => {
 export const request = async (req, res) => {
     const touser = req.params.username;
     const { username } = req.body;
-    console.log(touser,username,"gmmmmmm")
 
     try {
         const tousername = await User.findOne({ username: touser });
@@ -127,7 +126,6 @@ export const getallpendingusers = async (req, res) => {
                 allusers.push(user);
             }
         }
-        console.log(allusers)
         res.status(200).json({ result: allusers });
     } catch (error) {
         console.log(error)
@@ -136,7 +134,6 @@ export const getallpendingusers = async (req, res) => {
 export const updateuserdetails = async (req, res) => {
     const { username } = req.params;
     const { firstname, lastname, bio, selectedfile } = req.body;
-    console.log(username)
     try {
         const user = await User.findOne({ username: username });
         if (!user) {
@@ -154,12 +151,13 @@ export const updateuserdetails = async (req, res) => {
         console.log(error);
     }
 }
-export const removeascomepletefriend=async(req,res)=>{
+export const remove=async(req,res)=>{
     const username=req.params.username;
-    const {touser}=req.body;
+    const type=req.params.type;
+    const touser=req.body.username;
     try {
         const tousername=await User.findOne({username:touser});
-        const user=await User.findOne({username:touser});
+        const user=await User.findOne({username:username});
         if(!user || !tousername)
         {
             res.status(404).json({message:"user not found"});
@@ -168,15 +166,49 @@ export const removeascomepletefriend=async(req,res)=>{
         const tousernamefollowing=tousername.following;
         const userfollowing=user.following;
         const userfollowers=user.followers;
-         
-    } catch (error) {
+        const userpending=user.pending;
+        const tousernamepending=tousername.pending;
+        const updateduserpending=userpending.filter((u)=>u!==tousername.username);
+        const updatedtousernamepending=tousernamepending.filter((u)=> u!==user.username);
+        if(type==='follower')
+        {
+            const updateduserfollower = userfollowers.filter((user) => user !== tousername.username);
+            const updatedtouserfollowing = tousernamefollowing.filter((u) => u !== user.username);
+            await User.updateOne({ username: user.username }, { followers:updateduserfollower,pending:updateduserpending});
+            await User.updateOne({ username: touser }, { following:updatedtouserfollowing,pending:updatedtousernamepending});
+
+        }
+        else if(type==='following')
+        {
+            const updateduserfollowing = userfollowing.filter((user) => user !== tousername.username);
+            const updatedtouserfollower = tousernamefollowers.filter((u) => u !== user.username);
+            await User.updateOne({ username: user.username }, { following:updateduserfollowing,pending:updateduserpending});
+            await User.updateOne({ username: touser }, { followers:updatedtouserfollower,pending:updatedtousernamepending});
+        }
+        else
+        {
+            // console.log(tousernamefollowers,tousernamefollowing)
+            const updateduserfollower = userfollowers.filter((u) => u !== tousername.username);
+            const updatedtouserfollowing = tousernamefollowing.filter((u) => u !== user.username);
+            const updateduserfollowing = userfollowing.filter((u) => u !== tousername.username);
+            const updatedtouserfollower = tousernamefollowers.filter((u) => u !== user.username);
+            // console.log(updatedtouserfollower,updatedtouserfollowing);
+            await User.updateOne({ username: user.username }, { following:updateduserfollowing,followers:updateduserfollower,pending:updateduserpending});
+            await User.updateOne({ username: touser }, { followers:updatedtouserfollower,following:updatedtouserfollowing,pending:updatedtousernamepending});
+        }
+        const user1=await User.findOne({username:username});
+        const user2=await User.findOne({username:touser});
+        console.log("hmmm",user1,user2)
+
+
         
+    } catch (error) {
+        console.log(error)
     }
 }
 export const acceptanddeleteuser = async (req, res) => {
     const touser = req.params.username;
     const { username, method } = req.body;
-    console.log(touser);
     try {
         const tousername = await User.findOne({ username: touser });
         const user = await User.findOne({ username });

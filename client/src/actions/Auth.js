@@ -90,10 +90,19 @@ export const getgoogleuser = (email) => async (dispatch) => {
     console.log(error)
   }
 }
-export const getuserdetails = (setuserdetails, username) => async (dispatch) => {
+export const getuserdetails = (setuserdetails, username,type) => async (dispatch) => {
   try {
     const { data } = await api.getuserdetails(username);
-    setuserdetails(data.result);
+    if(type)
+    {
+      console.log(data.result.followers);
+      if(type==='followers')
+      setuserdetails(data.result.followers);
+      if(type==='following')
+      setuserdetails(data.result.following);
+    }
+    else
+      setuserdetails(data.result);
     dispatch({ type: 'USER_DETAILS', data });
   } catch (error) {
     console.log(error)

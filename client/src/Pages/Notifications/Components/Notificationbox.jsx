@@ -11,6 +11,8 @@ const Notificationbox = ({ name,userdata,item, firstname, lastname,handleclick,h
             setloading3(true)
         handleclick(type, name);
         
+        
+        
       };
       console.log(item)
       const [isPresent,setisPresent]=useState( userdata.following.includes(name) || item.pending.includes(userdata?.username))

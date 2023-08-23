@@ -4,5 +4,6 @@ import avatar from '../assets/avatar.png';
 import like from '../assets/like.svg';
 import comment from '../assets/comment.svg'
 import Globe from '../assets/Globe.gif'
+import logo2 from '../assets/logo2.png';
 
-export {logo,signin,avatar,like,comment,Globe} ;
+export {logo,signin,avatar,like,comment,Globe,logo2} ;

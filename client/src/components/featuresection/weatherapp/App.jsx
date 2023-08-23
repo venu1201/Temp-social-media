@@ -15,7 +15,9 @@ function App() {
   const [query,setQuery]=useState({q:'berlin'});
   const [units,setUnits]=useState('metric');
   const [weather,setWeather]=useState(null);
-
+  
+  
+  
   useEffect(()=>{
     
     
@@ -42,7 +44,6 @@ function App() {
   const fetchData=async()=>{
 
     const data=await GetFormattedWeatherData({q:"london"});
-    console.log(data);
 
   };
 
@@ -58,11 +59,11 @@ function App() {
   } 
   return (
     <div className={`max-w-full  bg-gradient-to-br from-cyan-900 to-blue-600 shadow-xl  ${formatbackground()}`}>
-      <Topbutton setQuery={setQuery}/>
+      {/* <Topbutton setQuery={setQuery}/> */}
       <Input setQuery={setQuery} units={units} setUnits={setUnits}/>
 
       {weather &&(
-      <div>
+      <div className=''>
       <TimeAndLocation weather={weather}/>
       <TemperatureAndDetails weather={weather}/>
 

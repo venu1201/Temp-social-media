@@ -13,12 +13,10 @@ const Posts = () => {
     dispatch(getPosts(posts,setposts));
   }, [])
   
-  console.log(posts)
-
   return (
     <div className='ac:w-[65%] md:w-[60%] ssm:w-[62%] ssm:justify-normal w-full  ss:h-screen h-full overflow-y-scroll flex flex-col items-center '>
         {posts.map((item,index)=>(
-            <Postbox key={index} data={item}/>
+            <Postbox key={index} data={item} user={user}/>
        
         ))}
 

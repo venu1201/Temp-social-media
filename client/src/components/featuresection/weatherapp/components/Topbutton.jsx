@@ -1,38 +1,33 @@
 import React from 'react'
 
-function Topbutton({setQuery}) {
-    const cities=[
+function Topbutton({ setQuery }) {
+    const cities = [
         {
             id: 1,
-            title:'Hyderabad'
+            title: 'Hyderabad'
         },
 
         {
             id: 2,
-            title:'Mumbai'
+            title: 'Mumbai'
         },
         {
             id: 3,
-            title:'America'
+            title: 'America'
         },
 
         {
             id: 4,
-            title:'Delhi'
-        },
-
-        {
-            id: 4,
-            title:'Seoul'
+            title: 'Delhi'
         },
     ]
-  return <div className='flex justify-around items-center '>
-  {cities.map((city)=>(
-        <button key={city.id} className='text-white text-lg font-medium' onClick={()=>setQuery({q:city.title})}>{city.title}</button>
-    ))}
-  
+    return <div className='flex justify-around items-center '>
+        {cities.map((city) => (
+            <button key={city.id} className='text-white text-lg font-medium' onClick={() => setQuery({ q: city.title })}>{city.title}</button>
+        ))}
 
-  </div>
+
+    </div>
 }
 
 export default Topbutton

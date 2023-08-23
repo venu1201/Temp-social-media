@@ -3,7 +3,7 @@ import { UilCloudSunRain,UilCloudSunMeatball,UilCloudSun ,UilThunderstormSun,Uil
 function Forecast({title}) {
   return (
     <div>
-    <div className="flex flex-col item-centre justify-start mt-6">
+    <div className="flex flex-col item-centre justify-start mt-3">
     <p className="text-white font-medium ">{title}</p>
 
     </div>

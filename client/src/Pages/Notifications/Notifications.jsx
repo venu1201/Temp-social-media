@@ -33,21 +33,24 @@ const Notifications = ({handle}) => {
     }, [pending])
     
 
-    const handleclick=(type,touser)=>{
+    const handleclick= (type,touser)=>{
       const obj={username:data?.result?.username,method:type};
-      dispatch(acceptanddeleteuser(obj,touser)).then(()=>{
-        setk(k=>k+1);
       
+        dispatch(acceptanddeleteuser(obj,touser)).then(()=>{
+          setk(k=>k+1);
         
-      });
+          
+        });
+      
+      
 
     }
    
     
   return (
-    <div className='w-[80%] font-poppins text-white h-full' >
+    <div className=' md:w-[75%]  sm:w-[68%] ss:w-[90%] w-full ssm:w-[74%] ac:w-[78%] font-poppins text-white h-full' >
       {loadingpage===false ? (
-        <div>
+        <div className=''>
             {pending.length>0 ? (
             <div className='mt-10'>
                 {allpendings?.map((item,index)=>(

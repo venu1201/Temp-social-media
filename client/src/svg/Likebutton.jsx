@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-const LikeButton = () => {
-  const [liked, setLiked] = useState(false);
+const LikeButton = ({check}) => {
+  const [liked, setLiked] = useState(check);
 
   const handleLike = () => {
     setLiked(!liked);

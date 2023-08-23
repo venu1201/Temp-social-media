@@ -7,10 +7,7 @@ const postSchema = mongoose.Schema(
     username: String,
     tags: [String],
     selectedfile: [String], // Store an array of compressed image data as a binary buffer
-    likeCount: {
-      type: Number,
-      default: 0,
-    },
+    likeCount:[String],
     Comments: [
       {
         username: String,

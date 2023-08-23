@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { UilSearch,UilLocationPoint } from '@iconscout/react-unicons'
-import { toast } from 'react-toastify';
 
 
 function Input({setQuery,units,setUnits}) {
@@ -10,13 +9,24 @@ function Input({setQuery,units,setUnits}) {
     if(city!=='') setQuery({q:city})
 
   }
-
-  const handleLocationCLick=()=>{
+  useEffect(() => {
     if(navigator.geolocation){
-      toast.info('Fetching users location')
       navigator.geolocation.getCurrentPosition((position)=>
       {
-        toast.success('Location Fetched Successfully')
+        let lat=position.coords.latitude;
+        let lon=position.coords.longitude;
+
+        setQuery({
+          lat,
+          lon,
+        })
+      })
+    }
+  }, [])
+  const handleLocationCLick=()=>{
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition((position)=>
+      {
         let lat=position.coords.latitude;
         let lon=position.coords.longitude;
 
@@ -35,20 +45,19 @@ function Input({setQuery,units,setUnits}) {
 
   };
   return(
-  <div className="flex flex-row  justify-center my-6">
+  <div className="flex flex-row  justify-center my-2">
   
 
-  <div className="flex flex-row  items-centre justify-centre space-x-4 w-3/4">
+  <div className="flex gap-1 items-centre justify-centre  w-[80%]">
 
-  <input value={city} onChange={(e)=>setCity(e.currentTarget.value)} type="text" placeholder="Search for city...." className="text-large text-black font-light p-2 focus:outline-none shadow-xl capitalize transition-all hover:scale-105 duration-300ms rounded-md hover:shadow-blue-600 placeholder:lowercase" ></input>
+  <input value={city} onChange={(e)=>setCity(e.currentTarget.value)} type="text" placeholder="Search for city...." className="text-large w-[75%] text-black font-light p-2 focus:outline-none shadow-xl capitalize transition-all duration-300 mx-1 placeholder:lowercase" ></input>
    
    <UilSearch  
    onClick={handleSearchClick}
-   size={20} 
-   className="text-white cursor-pointer font-light translate-y-2 transition ease-out hover:scale-125"
-   / >
+   className="text-white z-[999] cursor-pointer font-light translate-y-2 transition ease-out hover:scale-125"
+   />
   
-   <UilLocationPoint size={20} className="text-white cursor-pointer font-light translate-y-2 transition ease-out hover:scale-125 "
+   <UilLocationPoint className="text-white z-[999]   cursor-pointer font-light translate-y-2 transition ease-out hover:scale-125 "
     onClick={handleLocationCLick}
    />
   </div>
@@ -57,7 +66,7 @@ function Input({setQuery,units,setUnits}) {
   <button  name='metric' className="text-large text-white font-light transition ease-out hover:scale-110 "
   onClick={handleUnitchange}>°C</button>
 
-  <p className="text-large text-white font-light translate-y-2 mx-1" >|</p>
+  <p className="text-large text-white mt-1 font-light translate-y-2 mx-1" >/</p>
 
 
   <button  name='imperial' className="text-large text-white font-light transition ease-out hover:scale-110 " onClick={handleUnitchange}>°F</button>

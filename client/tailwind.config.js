@@ -5,13 +5,14 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        slidedown: "slidedown 0.3s ease forwards",
-        slidetop: "slidetop 0.3s ease forwards",
+        slidedown: "slidedown 0.1s ease-in-out forwards",
+        slidetop: "slidetop 0.1s ease forwards",
+        bounceshort:"bounce 1s ease-in-out 0.5"
       },
       keyframes: {
         slidedown: {
-          "0%": { transform: "translateY(-100%)" },
-          "100%": { transform: "translateY(0)" },
+          "0%": { transform: "translateY(-130%)" },
+          "100%": { transform: "translateY(-90%)" },
         },
         slidetop:{
           "0%": { transform: "translateY(0)" },
@@ -39,7 +40,7 @@ module.exports = {
     },
     screens: {
       xs: "350px",
-      mms:"400px",
+      mms:"430px",
       ms:"490px",
       ss: "655px",
       sm: "850px",

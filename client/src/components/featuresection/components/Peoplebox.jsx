@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { requesting } from '../../../actions/user'
 import { getuserdetails } from '../../../actions/Auth'
 import LoadingSpinner from '../../Spinner/Spinner'
+import Img from '../../LazyLoadImages/Img'
 const Peoplebox = ({ data }) => {
  
     const userdata = JSON.parse(localStorage.getItem('profile'));
@@ -44,7 +45,7 @@ const Peoplebox = ({ data }) => {
         <div className='flex   w-full h-[60px] justify-around items-center '>
             <div onClick={() => navigate(`/Profile/${data?.username}`)} className='flex cursor-pointer md:gap-5 ssm:gap-2 h-full w-full items-center '>
                 <div className='flex  w-[50px] h-[50px]'>
-                    <img className='object-fill h-[50px] w-[50px] rounded-full' src={data?.profilepicture || avatar} alt="" />
+                    <Img className={`object-fill h-[50px] w-[50px] rounded-full`} src={data?.profilepicture || avatar} alt="" />
                 </div>
                 <div className='ssm:w-[90px]  md:w-[120px] h-full flex flex-col gap-[2px] justify-center'>
                     <h4 className=' h-[20px] ssm:max-w-[90px] md:max-w-[120px] overflow-hidden overflow-ellipsis'>{data?.username}</h4>
@@ -54,7 +55,7 @@ const Peoplebox = ({ data }) => {
                 </div>
             </div>
             <div className='flex justify-center items-center'>
-                <button onClick={handleclick} className={`${value === 'ADD' ? "bg-blue-800" : "bg-blue-400"} flex justify-center items-center bg-blue-700 rounded-lg h-[50px] w-[90px]`}>
+                <button onClick={handleclick} className={`${value === 'ADD' ? "bg-gradient" : "bg-orange-300"} flex justify-center items-center bg-blue-700 rounded-lg h-[50px] w-[90px]`}>
                     {value==='loading'?(<LoadingSpinner/>):(
                         value
                     )}

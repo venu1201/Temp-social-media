@@ -21,13 +21,11 @@ const CreatePost = ({ data, data2 }) => {
 
     const imageFiles = acceptedFiles.filter((file) => file.type.startsWith('image/'));
     setnext(false);
-    console.log(imageFiles[0])
     if (imageFiles[0]) {
       const imageasset = await client.assets.upload('image', imageFiles[0], { contentType: imageFiles[0].type, filename: imageFiles[0].name })
         .catch((err) => {
           console.log('Upload failed', err.message);
         });
-      console.log(imageasset, "set");
 
       setimage(urlFor({ _type: 'image', asset: { _type: '_reference', _ref: imageasset._id } }).url());
       setnext(true)
@@ -47,12 +45,10 @@ const CreatePost = ({ data, data2 }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(createdpost)
     setpreview((pre) => !pre);
   };
 
   const handlepost = () => {
-    console.log(createdpost);
     dispatch(createpost(createdpost))
     data2((prev)=>!prev);
 

@@ -22,14 +22,15 @@ const Home = () => {
   dispatch(getuser(data?.result));
 
   
+
   return (
-    <div className='ss:h-screen h-[90%]  font-poppins  relative flex md:w-[75%] sm:w-[68%] ss:w-[90%] w-full ssm:w-[74%] ac:w-[78%]'>
+    <div className='ss:h-screen h-[80%]  font-poppins  relative flex md:w-[75%] sm:w-[68%] ss:w-[90%] w-full ssm:w-[74%] ac:w-[78%]'>
       {/* <Navbar user={data?.result?.username} /> */}
       
       <Dashboard />
         
        
-
+      {/* <button onClick={()=>callMemeAPI()}>hello</button> */}
 
    
     </div>
