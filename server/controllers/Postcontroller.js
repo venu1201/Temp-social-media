@@ -1,6 +1,5 @@
 import PostModel from "../models/PostModel.js";
 
-
 export const getPosts = async (req, res) => {
   try {
     const posts = await PostModel.find().sort({ createdAt: -1 });
