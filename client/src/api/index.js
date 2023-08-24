@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const API = axios.create({baseURL:'http://localhost:5000'});
+const API = axios.create({baseURL:'https://temp-social-media.vercel.app'});
 
 const BASE_URL=  `http://localhost:5000`;
 export const signin=(formdata)=> API.post('/user/signin',formdata);
