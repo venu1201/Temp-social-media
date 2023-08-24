@@ -15,7 +15,6 @@ import Blogbox from './Components/Blogbox'
 import Popup from './Components/Popup'
 import LoadingSpinner from '../../components/Spinner/Spinner'
 import { requesting } from '../../actions/user'
-import Masonry from "react-responsive-masonry"
 
 const Profile = () => {
   const { user } = useParams();
