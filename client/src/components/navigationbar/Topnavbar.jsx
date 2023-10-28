@@ -17,16 +17,10 @@ const Navbar = ({ user }) => {
   const [active, setactive] = useState(0);
   const remove = [2, 3, 6];
   const iconarray = [  <MdNotificationsActive className='h-9 w-9 sm:h-5 sm:w-5' />,<BsFillChatDotsFill className='h-9 w-9 sm:h-5 sm:w-5' />]
-  const [createpost, setcreatepost] = useState(false);
 
   const navigate = useNavigate();
-  const localdata = JSON.parse(localStorage.getItem('profile'));
   const location = useLocation();
-  const [userdata, setuserdata] = useState(null);
-  useEffect(() => {
-    if(localdata?.result?.username)
-    dispatch(getuserdetails(setuserdata, localdata?.result?.username));
-  }, [])
+ 
   useEffect(() => {
     if (location.pathname.includes('/Profile')) {
       setactive(5);

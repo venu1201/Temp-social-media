@@ -3,7 +3,7 @@ import { logo2 } from '../../assets'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import CreatePost from '../postssection/components/CreatePost';
-import { getselfdata, getuserdetails } from '../../actions/Auth';
+import { getselfdata } from '../../actions/Auth';
 import { AiFillHome } from "react-icons/ai";
 import { BsFillRocketTakeoffFill, BsFillChatDotsFill } from "react-icons/bs";
 import { MdNotificationsActive } from "react-icons/md";

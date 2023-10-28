@@ -10,7 +10,7 @@ const initialState = {
   authData: null,
   users: [],
   googleuser: { check: 0 },
-  userdetails:'',
+  userdetails:null,
   box:false,
   posts: [],
   profile_data:null,
