@@ -3,7 +3,7 @@ import {avatar} from '../../../assets/index'
 import LoadingSpinner from '../../../components/Spinner/Spinner';
 import { acceptanddeleteuser, getuserbyid } from '../../../actions/Auth';
 import { useDispatch } from 'react-redux';
-const Notificationbox = ({ name,userdata,item, firstname, lastname,handle,picture }) => {
+const Notificationbox = ({ name,userdata,item, firstname, lastname,picture }) => {
     const dispatch=useDispatch();
     const [peopledata,setpeopledata]=useState(null);
     useEffect(() => {      

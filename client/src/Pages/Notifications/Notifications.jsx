@@ -4,7 +4,7 @@ import Notificationbox from './Components/Notificationbox';
 import LoadingSpinner from '../../components/Spinner/Spinner';
 
 
-const Notifications = ({ handle }) => {
+const Notifications = () => {
   const data = useSelector((state) => state.authData);
   const [pending, setpending] = useState([]);
   const [loadingpage, setloadingpage] = useState(true);
@@ -48,7 +48,7 @@ const Notifications = ({ handle }) => {
             <div className='mt-10'>
               {pending?.map((item, index) => (
                 <div className='flex flex-col'>
-                  <Notificationbox key={item} handle={handle} item={item} userdata={data} />
+                  <Notificationbox key={item} item={item} userdata={data} />
 
                 </div>
               ))}

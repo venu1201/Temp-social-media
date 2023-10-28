@@ -39,7 +39,7 @@ const RouteWrapper = () => {
         <Route path='/' element={<Home />} />
         <Route path='/Auth' element={<Authpage />} />
         <Route path='/Profile/:user' element={<Profile />} />
-        <Route path='/Notifications' user={userData?.username} element={<Notifications />} />
+        <Route path='/Notifications' element={<Notifications />} />
         <Route path='/Settings' element={<Settings />} />
         <Route path='/Post/:id' element={<Postpage/>}/>
         <Route path='/News' element={<NewsPage/>}/>
