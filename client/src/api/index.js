@@ -6,6 +6,9 @@ const NewsAPI = axios.create({baseURL:'https://newsapi.org/v2'});
 // const BASE_URL=  `http://localhost:5000`;
 export const getselfdata=(username)=> API.get(`/user/${username}`);
 export const getuserbyid=(username)=> API.get(`/user/${username}`);
+
+
+const BASE_URL=  `http://localhost:5000`;
 export const signin=(formdata)=> API.post('/user/signin',formdata);
 export const signup=(formdata)=> API.post('/user/signup',formdata);
 export const getusers=(username)=> API.post('/user/users',{username:username});
