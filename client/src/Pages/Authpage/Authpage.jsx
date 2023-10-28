@@ -8,7 +8,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LoginSocialGoogle } from "reactjs-social-login";
 import LoadingSpinner from '../../components/Spinner/Spinner';
-import { auth_success, clear_google, reset_state } from '../../reducers';
 const initialdata = { username: '', firstname: '', lastname: '', email: '', password: '', confirmpassword: '', picture: '' }
 const Authpage = () => {
 

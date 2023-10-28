@@ -137,8 +137,7 @@ export const getuserdetails = (setuserdetails, username,type) => async (dispatch
     }
     else
       setuserdetails(data.result);
-    dispatch(user_details(data));
-    // dispatch({ type: 'USER_DETAILS', data });
+    // dispatch(user_details(data));
   } catch (error) {
     console.log(error)
   }
