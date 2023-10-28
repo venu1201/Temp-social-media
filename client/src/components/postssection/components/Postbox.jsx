@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getuserbyid, getuserdetails } from '../../../actions/Auth'
+import { getuserbyid } from '../../../actions/Auth'
 import { useDispatch } from 'react-redux'
 import { avatar, comment, like } from '../../../assets'
 import { SlLike } from "react-icons/sl";

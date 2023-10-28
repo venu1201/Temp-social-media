@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { getuserdetails, getallpendingusers, acceptanddeleteuser } from '../../actions/Auth';
 import Notificationbox from './Components/Notificationbox';
 import LoadingSpinner from '../../components/Spinner/Spinner';
 
