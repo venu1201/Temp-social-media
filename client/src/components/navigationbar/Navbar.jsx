@@ -9,7 +9,7 @@ import { BsFillRocketTakeoffFill, BsFillChatDotsFill } from "react-icons/bs";
 import { MdNotificationsActive } from "react-icons/md";
 import { FiSettings } from "react-icons/fi";
 import { CgProfile, CgAddR } from "react-icons/cg";
-const Navbar = ({ user }) => {
+const Navbar = () => {
   const dispatch = useDispatch();
   const array = ["Home", "Explore", "Chat", "Notifications", "Create Post", "Profile", "Settings"];
   const [active, setactive] = useState(0);

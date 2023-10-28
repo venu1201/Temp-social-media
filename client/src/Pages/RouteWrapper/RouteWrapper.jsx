@@ -13,13 +13,14 @@ import { remove_profile_data } from '../../reducers';
 import NewsPage from '../NewsPage/NewsPage';
 const RouteWrapper = () => {
   const dispatch = useDispatch();
-  const [userData, setUserData] = useState(null);
-  const user= useSelector((state)=>state.authData);
-  setUserData(user);
+  const user=useState((state)=>state);
   const location = useLocation();
   const Navigate=useNavigate();
+  
+  console.log(user)
   useEffect(() => {
-    if (!userData && !location.pathname.includes('/Auth')) {
+    if (user.authData===null && !location.pathname.includes('/Auth')) {
+      console.log("nen erripuk ni");
       Navigate('/Auth'); 
     }
     if(!location.pathname.includes('Profile'))
@@ -33,7 +34,7 @@ const RouteWrapper = () => {
   return (
     <div className='text-white flex-1 flex ss:flex-row flex-col-reverse fixed h-[100vh] w-screen'>
       {!location.pathname.includes('/Auth') && (
-        <Navbar user={userData?.result} />
+        <Navbar />
       )}
       <Routes>
         <Route path='/' element={<Home />} />
