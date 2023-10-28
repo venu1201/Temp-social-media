@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Switch from './components/Switch';
 import { getuserdetails, updateuserdetails } from '../../actions/Auth';
 import { client,urlFor } from '../../Client';
 import { avatar } from '../../assets';
 
 const Settings = () => {
-    const localdata=JSON.parse(localStorage.getItem('profile'));
-    const [userdetails,setuserdetails]=useState(localdata?.result);
-    const [selectedImage, setSelectedImage] = useState(userdetails?.profilepicture);
+    const localdata=useSelector((state)=>state.authData);
+    const [selectedImage, setSelectedImage] = useState(localdata?.profilepicture);
     const [privacy,setprivacy]=useState(false);
     const dispatch=useDispatch();
 
-    console.log(userdetails)
-    useEffect(() => {
-        dispatch(getuserdetails(setuserdetails,userdetails?.username));
-        seteditdata({firstname:userdetails?.firstname,lastname:userdetails?.lastname,bio:userdetails?.bio,selectedfile:null})
-    }, [userdetails])
-    const [editdata,seteditdata]=useState({firstname:userdetails?.firstname,lastname:userdetails?.lastname,bio:userdetails?.bio,selectedfile:null});
+    // useEffect(() => {
+    //     dispatch(getuserdetails(setuserdetails,userdetails?.username));
+    //     seteditdata({firstname:userdetails?.firstname,lastname:userdetails?.lastname,bio:userdetails?.bio,selectedfile:null})
+    // }, [userdetails])
+    const [editdata,seteditdata]=useState({firstname:localdata?.firstname,lastname:localdata?.lastname,bio:localdata?.bio,selectedfile:null});
 
     const [next, setnext] = useState(true)
     const handleImageChange =async (e) => {
@@ -52,14 +50,15 @@ const Settings = () => {
     }
     const handlesubmit=(e)=>{
         e.preventDefault();
-      
+        setnext(false);
         console.log(editdata);
-        dispatch(updateuserdetails(editdata,userdetails?.username));
+        dispatch(updateuserdetails(editdata,localdata?.username)).then(()=>{
+            setnext(true);
+        });
        
         
     }
   
-    console.log(userdetails,"hmm")
     return (
         <div className='ss:h-screen justify-center items-center h-[90%]  font-poppins  relative flex md:w-[75%] sm:w-[68%] ss:w-[80%] w-full ssm:w-[74%] ac:w-[78%]'>
             <div className='h-[90%] w-[80%] rounded-3xl shadow-sm shadow-dimWhite bg-black flex'>
@@ -89,13 +88,13 @@ const Settings = () => {
                             <div className='w-full text-[20px] text-dimWhite gap-4 h-[35px] mt-2 flex  items-center'>
                                 <div>Username :</div>
                                 <div>
-                                    {userdetails?.username}
+                                    {localdata?.username}
                                 </div>
                             </div>
                             <div className='w-full text-[20px] mb-1 text-dimWhite gap-4 h-[35px] flex items-center'>
                                 <div>Email :</div>
                                 <div>
-                                    {userdetails?.email}
+                                    {localdata?.email}
                                 </div>
                             </div>
                             <div className='w-full gap-4 h-[45px] mt-2 flex justify-center items-center'>
@@ -113,7 +112,7 @@ const Settings = () => {
                         </div>
                         <button
                             type="submit"
-                            className="text-[20px] rounded-lg w-[200px] mt-9 px-3 font-bold text-white bg-gradient h-[70px]"
+                            className={`text-[20px] ${next===true? "cursor-pointer":"cursor-wait"} rounded-lg w-[200px] mt-9 px-3 font-bold text-white bg-gradient h-[70px]`}
                         >
                             {next === true ? (
                                 <span>

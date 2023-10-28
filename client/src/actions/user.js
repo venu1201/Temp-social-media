@@ -1,30 +1,32 @@
 import * as api from '../api/index.js';
+import { box, profile_data } from '../reducers/index.js';
+import { getuserbyid } from './Auth.js';
 
-
-export const requesting = (username,user,setcheck) => async (dispatch) => {
+export const requesting = (username,user) => async (dispatch) => {
     try {
-      console.log(username,user);
       const { data } = await api.requesting(username,user);
-        const {result}=data;
-        const {pending}=result;
+      console.log(data);
+        // const {result}=data;
+        // const {pending}=result;
 
-        for(let i=0;i<pending.length;i++)
-        {
-            if(pending[i]===user.username)
-            {
-                dispatch({type:'BOX',data:true})
-            }
-        }    
+        // for(let i=0;i<pending.length;i++)
+        // {
+        //     if(pending[i]===user.username)
+        //     {
+        //         dispatch({type:'BOX',data:true})
+        //     }
+        // }    
     //   setisSignin(!isSignin)
     } catch (error) {
       const errorMessage = error;
       console.log(errorMessage);
     }
   };
-  export const remove=(type,username,touser)=>async(dispatch)=>{
+  export const remove=(type,username,touser,setuserdetails)=>async(dispatch)=>{
     try {
-      console.log(type,username,touser)
       const {data}=await api.remove(type,username,touser);
+      // setuserdetails(data.user);
+      dispatch(profile_data(data.user));
     } catch (error) {
       console.log(error);
     }

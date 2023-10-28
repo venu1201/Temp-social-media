@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/navigationbar/Navbar'
 import { useDispatch, useSelector } from 'react-redux'
-import { getuserdetails } from '../../actions/Auth'
+import { getselfdata, getuserbyid, getuserdetails } from '../../actions/Auth'
 import { useLocation, useParams } from 'react-router-dom'
 import { FaSquarePlus } from "react-icons/fa6";
 import { avatar } from '../../assets'
@@ -15,99 +15,93 @@ import Blogbox from './Components/Blogbox'
 import Popup from './Components/Popup'
 import LoadingSpinner from '../../components/Spinner/Spinner'
 import { requesting } from '../../actions/user'
-import Masonry from "react-responsive-masonry"
 
 const Profile = () => {
-  const { user } = useParams();
-  const localdata = JSON.parse(localStorage.getItem('profile'));
-  const [isEdit, setisEdit] = useState(false);
-  const location = useLocation();
-  const [str, setstr] = useState("ADD")
-  const [showremove,setshowremove]=useState(false);
-  useEffect(() => {
 
-    if (localdata?.result?.username === user) {
-      setisEdit(true);
-    }
-    else {
-      setisEdit(false);
-      if (userdetails?.followers?.includes(localdata?.result?.username)) {
-        setstr("ADDED")
-      }
-      else if (!userdetails?.followers?.includes(localdata?.result?.username) && userdetails?.pending?.includes(localdata?.result?.username)) {
-        setstr("Pending");
-      }
-      else if (!userdetails?.followers?.includes(localdata?.result?.username) && !userdetails?.pending?.includes(localdata?.result?.username)) {
-        setstr("ADD");
-      }
-
-    }
-  }, [user, localdata, location.pathname])
-
-  const [userdetails, setuserdetails] = useState(null)
+  // declarations
   const dispatch = useDispatch();
+  const { user } = useParams();
+  const localdata = useSelector((state) => state.authData);
+  const profiledata=useSelector((state)=>state.profile_data);
+  const location = useLocation();
+  console.log(profiledata);
+  // states
+  const [isEdit, setisEdit] = useState(false);
+  const [userdetails, setuserdetails] = useState(null)
   const [edit, setedit] = useState(false)
   const [showfollowers, setshowfollowers] = useState(false);
   const [showfollowing, setshowfollowing] = useState(false);
-  const [boolremove,setboolremove]=useState(1);
-  const [b,setb]=useState(false);
-
-  useEffect(() => {
-    dispatch(getuserdetails(setuserdetails, user)).then(()=>{
-    })
-    // getuserdetails(setuserdetails,username);
-    
-
-  }, [user, edit,b, location.pathname,showfollowers,showfollowing])
-
-  const changeremove=()=>{
-    setboolremove(boolremove+1);
-  }
-  const [userposts, setuserposts] = useState([]);
-  useEffect(() => {
-    if (userdetails)
-      dispatch(getpostsbyusername(userdetails?.username, setuserposts));
-  }, [userdetails])
+  const [boolremove, setboolremove] = useState(1);
+  const [b, setb] = useState(false);
   const [showposts, setshowposts] = useState(true);
-  const [loading,setloading]=useState(false);
+  const [loading, setloading] = useState(false);
+  const [userposts, setuserposts] = useState([]);
+  const [x,setx]=useState(0);
+  
+  //functions 
+  const changeremove = () => {
+    setboolremove(boolremove + 1);
+  }
   const handleclick = () => {
     setloading(true)
-    dispatch(requesting( user,localdata?.result))
+    dispatch(requesting(user, localdata))
       .then(() => {
-        
-        dispatch(getuserdetails(setuserdetails, user));
+        setx(x+1);
         setloading(false);
       })
       .catch(error => {
         console.error("Error occurred:", error);
       });
   };
+
+  // useeffects
+  useEffect(() => {
+    if (localdata?.username === user) {
+      setisEdit(true);
+    }
+    else {
+      setisEdit(false);
+    }
+  }, [user, localdata, location.pathname])
+  useEffect(() => {
+    // if(localdata?.username==user)
+    //   dispatch(getselfdata(localdata.username));
+    // else
+      dispatch(getuserbyid(user, setuserdetails,"profile"));
+  }, [user, edit, b,x, location.pathname, showfollowers, showfollowing])
+ 
+  useEffect(() => {
+    if (userdetails)
+      dispatch(getpostsbyusername(userdetails?.username, setuserposts));
+  }, [userdetails])
+  
+  
   return (
     <div className=' relative  md:w-[75%] sm:w-[68%] ss:w-[80%] w-full ssm:w-[74%] ac:w-[78%] font-poppins text-white ss:h-full h-[80%]  '>
 
-      {userdetails !== null ? (
+      {profiledata !== null ? (
         <div className='h-full  overflow-scroll w-full '>
           <div className='flex px-1   ms:flex-row flex-col ac:px-32 md:px-14 ssm:px-10 sm:px-8 mms:px-4  pt-10 ac:gap-10 md:gap-7 ssm:gap-3 gap-5'>
             <div className='flex  mx-auto    justify-center items-center h-[200px]  md:min-w-[200px] ms:min-w-[180px] min-w-[180px] max-w-[180px]'>
-              <img className='object-fill h-full w-full rounded-md  shadow-sm shadow-white' src={userdetails?.profilepicture || avatar} alt="" />
+              <img className='object-fill h-full w-full rounded-md  shadow-sm shadow-black' src={profiledata?.profilepicture || avatar} alt="" />
             </div>
             <div className='flex gap-1 ms:w-[60%] w-[100%]      flex-col pt-2 '>
               <h3 className='text-[30px] flex ms:justify-normal justify-center  w-full'>
-                {userdetails?.username}
+                {profiledata?.username}
               </h3>
               <div className='text-[20px] w-full text-dimWhite flex ms:justify-normal justify-center gap-2 mt-2'>
                 <span>
-                  {userdetails?.firstname}
+                  {profiledata?.firstname}
                 </span>
                 <span>
-                  {userdetails?.lastname}
+                  {profiledata?.lastname}
                 </span>
               </div>
 
               {
-                userdetails?.bio?.length > 0 ? (
+                profiledata?.bio?.length > 0 ? (
                   <div className='text-[18px] flex ms:justify-normal justify-center items-center ms:px-0 px-10 break-all  text-dimWhite mt-3'>
-                    {userdetails?.bio}
+                    {profiledata?.bio}
                   </div>
                 ) : (
                   <div className='hidden'></div>
@@ -116,7 +110,7 @@ const Profile = () => {
               <div className='mt-3 font-semibold py-3 sm:gap-4 ss:gap-2 gap-3 sm:text-[20px] ss:text-[17px] text-[14px] flex ms:justify-normal justify-center'>
                 <div onClick={() => setshowfollowers(true)} className='flex gap-2 cursor-pointer '>
                   <span>
-                    {userdetails?.followers?.length}
+                    {profiledata?.followers?.length}
                   </span>
                   <span>
                     Followers
@@ -124,7 +118,7 @@ const Profile = () => {
                 </div>
                 <div onClick={() => setshowfollowing(true)} className='flex gap-2 cursor-pointer '>
                   <span>
-                    {userdetails?.following?.length}
+                    {profiledata?.following?.length}
                   </span>
                   <span>
                     Following
@@ -141,14 +135,37 @@ const Profile = () => {
 
 
               </div>
+              {/* if(userdata?.followers?.includes(Tdata?.username) && Tdata?.followers?.includes(userdata?.username)) {
+                console.log("hmmmm","hmmmmmmmmmmmmmmm")
+                setvalue("ADDED");
+            }
+            else if(Tdata?.pending?.includes(userdata.username))
+            {
+                setvalue("Pending")
+            }
+            else if((!userdata?.followers?.includes(Tdata?.username) && !Tdata?.followers?.includes(userdata.username)))
+            {
+                setvalue("ADD");
+            } */}
               {!isEdit && (
                 <span className='flex ms:justify-normal justify-center  '>
-                  {loading===false?(<span onClick={handleclick} className='text-sky-400 cursor-pointer'>
-                    {str}
-                  </span>):(
-                    <LoadingSpinner/>
+                  {loading === false ? (<span onClick={handleclick} className='text-sky-400 cursor-pointer'>
+                    {localdata?.followers?.includes(profiledata?.username) && profiledata?.followers?.includes(localdata?.username) && <>
+                      ADDED
+                    </>} 
+                    {profiledata?.pending?.includes(localdata.username) && <>
+                      Pending
+                    </> }
+                    {(!localdata?.followers?.includes(profiledata?.username) && !profiledata?.pending?.includes(localdata.username)) && (
+                      <>
+                        ADD
+                      </>
+                    )} 
+      
+                  </span>) : (
+                    <LoadingSpinner />
                   )}
-                  
+
                 </span>
 
               )}
@@ -177,13 +194,13 @@ const Profile = () => {
           </div>
 
           {showfollowers && (
-            <Popup type={"followers"} b={setb} edit={isEdit} changeremove={changeremove} data={userdetails?.followers} name={"Followers"} setdefault={setshowfollowers} />
+            <Popup type={"followers"} userid={profiledata?.username} setuserdetails={setuserdetails} b={setb} edit={isEdit} changeremove={changeremove} data={profiledata?.followers} name={"Followers"} setdefault={setshowfollowers} />
           )}
           {showfollowing && (
-            <Popup type={"following"} b={setb} edit={isEdit} changeremove={changeremove} data={userdetails?.following} name={"Following"} setdefault={setshowfollowing} />
+            <Popup type={"following"} b={setb} edit={isEdit} changeremove={changeremove} data={profiledata?.following} name={"Following"} setdefault={setshowfollowing} />
           )}
           {edit && (
-            <EditProfile userdetails={userdetails} setedit={setedit} />
+            <EditProfile userdetails={profiledata} setedit={setedit} />
           )}
           <div className='w-full flex justify-center items-center gap-5 mt-16 h-[60px]'>
             <Switch data={["Posts", "Blogs"]} setshowposts={setshowposts} />

@@ -4,16 +4,52 @@ import User from '../models/Usermodel.js'
 
 
 export const getusers = async (req, res) => {
-    const { username } = req.body;
-    // console.log(username)
+    const username  = req.body.username;
     try {
         const users = await User.find();
         const filteredUsers = users.filter(user => user.username !== username);
-        // console.log(filteredUsers);
         //console.log(username)
-        res.status(200).json({ result: filteredUsers });
+        const usersarray=[];
+        filteredUsers.map((user)=>{
+            usersarray.push(user.username)
+        })
+        res.status(200).json({ result: filteredUsers,result1:usersarray });
     } catch (error) {
         res.status(500).json({ message: "Something went wrong" });
+    }
+}
+export const getselfdata=async(req,res)=>{
+    const username=req.params.id;
+    try {
+        const user=await User.findOne({username});
+        if(user)
+        {
+            res.status(200).json({result:user});
+        }
+        else
+        {
+            res.status(404).json({message:"user not found"});
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Something went wrong" });
+
+    }
+}
+export const getuserbyid=async(req,res)=>{
+    const username=req.params.id;
+    try {
+        const user=await User.findOne({username});
+        if(user)
+        {
+            res.status(200).json({result:user});
+        }
+        else
+        {
+            res.status(404).json({message:"user not found"});
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Something went wrong" });
+
     }
 }
 export const getuserdetails = async (req, res) => {
@@ -86,6 +122,7 @@ export const signup = async (req, res) => {
 export const request = async (req, res) => {
     const touser = req.params.username;
     const { username } = req.body;
+    console.log(username,touser);
 
     try {
         const tousername = await User.findOne({ username: touser });
@@ -105,7 +142,8 @@ export const request = async (req, res) => {
             await User.updateOne({ username: touser }, { pending: updatedpending });
         }
         const updated = await User.findOne({ username: touser });
-        res.status(200).json({ result: updated });
+        const updateduser= await User.findOne({username});
+        res.status(200).json({ result: updated,userdata: updateduser});
         //console.log(pending)
 
 
@@ -147,6 +185,9 @@ export const updateuserdetails = async (req, res) => {
 
         }
         const result = await User.find({ username: username });
+        console.log(result)
+        res.status(200).json({ result: result });
+
     } catch (error) {
         console.log(error);
     }
@@ -193,12 +234,13 @@ export const remove=async(req,res)=>{
             const updateduserfollowing = userfollowing.filter((u) => u !== tousername.username);
             const updatedtouserfollower = tousernamefollowers.filter((u) => u !== user.username);
             // console.log(updatedtouserfollower,updatedtouserfollowing);
-            await User.updateOne({ username: user.username }, { following:updateduserfollowing,followers:updateduserfollower,pending:updateduserpending});
+            await User.updateOne({ username: username }, { following:updateduserfollowing,followers:updateduserfollower,pending:updateduserpending});
             await User.updateOne({ username: touser }, { followers:updatedtouserfollower,following:updatedtouserfollowing,pending:updatedtousernamepending});
         }
         const user1=await User.findOne({username:username});
         const user2=await User.findOne({username:touser});
         console.log("hmmm",user1,user2)
+        res.status(200).json({ user: user1 , touser:user2 });
 
 
         

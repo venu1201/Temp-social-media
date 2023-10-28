@@ -8,7 +8,14 @@ export const getPosts = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
+// export const getPostById = async (req,res)=>{
+//   try {
+//     const {id}=req.params;
+//     console.log(id);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 export const createpost = async (req, res) => { 
   const { title, description, username, selectedfile } = req.body;
   try {

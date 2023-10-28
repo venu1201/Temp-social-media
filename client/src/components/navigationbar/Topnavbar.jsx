@@ -24,6 +24,7 @@ const Navbar = ({ user }) => {
   const location = useLocation();
   const [userdata, setuserdata] = useState(null);
   useEffect(() => {
+    if(localdata?.result?.username)
     dispatch(getuserdetails(setuserdata, localdata?.result?.username));
   }, [])
   useEffect(() => {

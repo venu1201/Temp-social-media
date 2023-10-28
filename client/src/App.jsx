@@ -1,9 +1,13 @@
 import React from 'react';
-import { BrowserRouter ,Route,Routes} from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import RouteWrapper from '../src/Pages/RouteWrapper/RouteWrapper';
+import { useSelector } from 'react-redux';
 
 
 const App = () => {
+  // localStorage.removeItem('profile');
+  // const store=useSelector((state)=>state);
+  // console.log("store",store);
   return (
     <BrowserRouter>
       <RouteWrapper />

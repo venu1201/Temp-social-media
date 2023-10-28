@@ -1,28 +1,16 @@
-const axios = require('axios');
+import axios from 'axios';
 
-const callMemeAPI = async () => {
-  const options = {
-    method: 'GET',
-    url: 'https://ronreiter-meme-generator.p.rapidapi.com/meme',
-    params: {
-      top: 'Top Text',
-      bottom: 'Bottom Text',
-      meme: 'Condescending-Wonka',
-      font_size: '50',
-      font: 'Impact'
-    },
-    headers: {
-      'X-RapidAPI-Key': '747933dc03mshd3ed80e14367ed6p13f472jsnf77606656aec',
-      'X-RapidAPI-Host': 'ronreiter-meme-generator.p.rapidapi.com'
-    }
-  };
+const NewsAPI = axios.create({ baseURL: 'https://newsapi.org/v2' });
 
-  try {
-    const response = await axios.request(options);
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
+const apiKey = 'aef6d7fa2a974eeab90111c226b94ecb';
+
+export const fetchTopHeadlines = (category) => {
+  console.log(category);
+  if (category) {
+    return NewsAPI.get(`/top-headlines?country=in&category=${category}&apiKey=${apiKey}`);
+  } else {
+    console.log("hmmmkkk");
+    console.log(`https://newsapi.org/v2` + `/top-headlines?country=in&apiKey=${apiKey}`);
+    return NewsAPI.get(`/top-headlines?country=in&apiKey=${apiKey}`);
   }
 };
-
-export default callMemeAPI;

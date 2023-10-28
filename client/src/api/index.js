@@ -2,11 +2,13 @@ import axios from 'axios';
 
 
 const API = axios.create({baseURL:'http://localhost:5000'});
-
-const BASE_URL=  `http://localhost:5000`;
+const NewsAPI = axios.create({baseURL:'https://newsapi.org/v2'});
+// const BASE_URL=  `http://localhost:5000`;
+export const getselfdata=(username)=> API.get(`/user/${username}`);
+export const getuserbyid=(username)=> API.get(`/user/${username}`);
 export const signin=(formdata)=> API.post('/user/signin',formdata);
 export const signup=(formdata)=> API.post('/user/signup',formdata);
-export const getusers=(username)=> API.post('/user/users',username);
+export const getusers=(username)=> API.post('/user/users',{username:username});
 export const getgoogleuser=(email)=> API.get(`/user/googleverify/${email}`);
 export const getuserdetails=(username)=>API.get(`/user/details/${username}`);
 export const getallpendingusers=(pending)=>API.post(`/user/getallpendingusers`,pending);
@@ -34,3 +36,9 @@ export const getpostdetails= (id)=>API.get(`/posts/getpostdetails/${id}`);
 // following
 
 export const requesting = (username,user)=> API.post(`/user/request/${username}`,user)
+
+
+//news api
+
+// https://newsapi.org/v2/top-headlines?country=in&apiKey=aef6d7fa2a974eeab90111c226b94ecb
+

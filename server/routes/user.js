@@ -1,9 +1,11 @@
 import express from 'express';
-import {getuserdetails, getgoogleuser, getusers, signin,signup, request, getallpendingusers, acceptanddeleteuser, updateuserdetails, remove } from '../controllers/usercontroller.js';
+import {getuserdetails,getselfdata, getuserbyid,getgoogleuser, getusers, signin,signup, request, getallpendingusers, acceptanddeleteuser, updateuserdetails, remove } from '../controllers/usercontroller.js';
 const router=express.Router();
 router.post('/signin',signin);
 router.post('/signup',signup);
 router.post('/users',getusers)
+router.get('/:id',getuserbyid);
+router.get('/:id',getselfdata);
 router.get('/googleverify/:email',getgoogleuser);
 router.get('/details/:username',getuserdetails);
 router.post('/request/:username',request)

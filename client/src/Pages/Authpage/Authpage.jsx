@@ -8,41 +8,91 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LoginSocialGoogle } from "reactjs-social-login";
 import LoadingSpinner from '../../components/Spinner/Spinner';
+import { auth_success, clear_google, reset_state } from '../../reducers';
 const initialdata = { username: '', firstname: '', lastname: '', email: '', password: '', confirmpassword: '', picture: '' }
 const Authpage = () => {
 
-
+  // declarations..........................................................................
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const googleuser = useSelector((state) => state.googleuser);
+  const error = useSelector((state) => state.error);  
+  const state = useSelector((state) => state);
+  console.log(state)
+
+  // states...................................................................................
   const [isSignin, setisSignin] = useState(true);
   const [formdata, setformdata] = useState(initialdata);
-  const googleuser = useSelector((state) => state.authReducer.googleuser);
-  const error = useSelector((state) => state.authReducer.error);
   const [googledata, setgoogledata] = useState({})
   const [Error, setError] = useState(error);
-  console.log(error)
+  const [loading, setloading] = useState(false);
+
+  // useeffects.............................................................................
   useEffect(() => {
     if (error)
       setError(error)
   }, [error])
-  const [loading,setloading]=useState(false);
+  useEffect(() => {
+
+    if (Error) {
+      toast.error(Error.message, {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "colored",
+      });
+    }
+
+  }, [Error])
+  useEffect(() => {
+    if (localStorage.getItem('profile'))
+      navigate('/')
+    else
+      navigate('/Auth')
+  }, [localStorage.getItem('profile')])
+
+  useEffect(() => {
+    if (googleuser.check == 1 && localStorage.getItem('profile') != null)
+      navigate('/')
+    else
+      navigate('/Auth');
+  }, [googleuser.check])
+  
+  useEffect(() => {
+    // Reset error message after 3 seconds
+    if (Error?.message?.length > 0) {
+      const timeout = setTimeout(() => {
+        setError({ message: null });
+      }, 3000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [Error]);
+
+  // functions........................................................................................
+
   const handlesubmit = (e) => {
-    e.preventDefault(); // Prevent the form from submitting automatically
+    e.preventDefault();
     setloading(true);
-    console.log(loading)
+
 
     if (isSignin) {
-      // Validate for Sign In
+
       if (!formdata.username || !formdata.password) {
         setError({ message: 'Please enter username and password.' });
         setloading(false);
         return;
       }
-      dispatch(signin(formdata, navigate)).then(()=>{
+      // console.log("formdataaaaaaaaaaa",formdata)
+      dispatch(signin(formdata, navigate)).then(() => {
         setloading(false);
       });
     } else {
-      // Validate for Sign Up
+
       if (!formdata.username || !formdata.firstname || !formdata.lastname || !formdata.email || !formdata.password || !formdata.confirmpassword) {
         setError({ message: 'Please fill all the required fields.' });
         setloading(false);
@@ -74,7 +124,7 @@ const Authpage = () => {
         return;
       }
 
-      dispatch(signup(formdata, setisSignin, isSignin)).then(()=>{
+      dispatch(signup(formdata, setisSignin, isSignin)).then(() => {
         setloading(false);
 
       });
@@ -91,6 +141,8 @@ const Authpage = () => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
   };
+
+
   const handlegooglesubmit = async () => {
     const { email, given_name, family_name, picture } = googledata;
     formdata.email = email;
@@ -110,47 +162,12 @@ const Authpage = () => {
     if (error)
       error.message = '';
   }
-  useEffect(() => {
-   
-    if (Error)
-    {
-      toast.error(Error.message, {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: 0,
-        theme: "colored",
-        });
-    }
-     
-  }, [Error])
-  useEffect(() => {
-    if (googleuser.check === 1) {
+  const forgotpassword=(e)=>{
+    e.preventDefault();
+  }
+  // console.log(googleuser);
+  // console.log(Error)
 
-      const data = { result: {}, token: "" };
-      data.result = googleuser.result;
-      data.token = googleuser.token;
-      dispatch({ type: 'AUTH_SUCCESS', data });
-      dispatch({ type: 'CLEAR_GOOGLE' })
-      navigate('/')
-    }
-  }, [googleuser.check])
-
-  console.log(googleuser);
-  console.log(Error)
-  useEffect(() => {
-    // Reset error message after 3 seconds
-    if (Error?.message?.length > 0) {
-      const timeout = setTimeout(() => {
-        setError({ message: null });
-      }, 3000);
-
-      return () => clearTimeout(timeout);
-    }
-  }, [Error]);
   return (
     <div className='h-screen   py-10 transition ease-in-out duration-1000 w-screen flex flex-col font-poppins  items-center '>
       <ToastContainer
@@ -178,13 +195,20 @@ const Authpage = () => {
           </h3>
 
           {isSignin === true ? (
-            <form className='transition-all  duration-300 ease-in-out'>
+            <div className=''>
+              <form className='transition-all  duration-300 ease-in-out'>
               <div className='flex  flex-col p-2 gap-2'>
 
                 <input value={formdata.username} name='username' onChange={handlechange} type="text" className='w-full  h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Username*' />
                 <input value={formdata.password} name='password' onChange={handlechange} type="password" className='w-full  h-[60px] text-[24px] text-center outline-none border-none text-black' placeholder='Password*' />
+                
               </div>
-            </form>
+              </form>
+              <div className='mt-1 text-green-500 pr-3 w-full flex justify-end'>
+                  <button onClick={()=>forgotpassword()} className='hover:scale-105'>Forgot Password</button>
+              </div>
+            </div>
+            
           ) : (
             <form className='duration-300 ease-in-out'>
               <div className='flex flex-col p-2 gap-2'>
@@ -216,16 +240,16 @@ const Authpage = () => {
 
           <div className='p-2 flex flex-col'>
             <button onClick={handlesubmit} className='w-full h-[60px] bg-blue-900 text-[24px] mt-2'>
-              {loading ===true? (
+              {loading === true ? (
                 <div className='flex justify-center'>
-                  <LoadingSpinner/>
+                  <LoadingSpinner />
                 </div>
-              ):(
+              ) : (
                 <div>
-                {isSignin == true ? ("Sign In") : ("Sign Up")}
+                  {isSignin == true ? ("Sign In") : ("Sign Up")}
                 </div>
               )}
-              
+
 
             </button>
             <LoginSocialGoogle

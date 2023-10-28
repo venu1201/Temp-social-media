@@ -1,4 +1,5 @@
 import * as api from '../api/index.js';
+import { all_posts } from '../reducers/index.js';
 
 export const createpost = (createpostdata) => async (dispatch) => {
     try {
@@ -15,6 +16,7 @@ export const getPosts = (posts,setposts)=> async (dispatch)=>{
         // setallposts(data);
         setposts([...posts,...data.result]);
         dispatch({type:'ALL_POSTS',data});
+        dispatch(all_posts(data));
 
     } catch (error) {
         console.log(error);

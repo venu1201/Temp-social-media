@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getuserdetails } from '../../../actions/Auth'
+import { getuserbyid, getuserdetails } from '../../../actions/Auth'
 import { useDispatch } from 'react-redux'
 import { avatar, comment, like } from '../../../assets'
 import { SlLike } from "react-icons/sl";
@@ -8,22 +8,20 @@ import HeartSymbol from '../../../svg/Likebutton';
 import { useNavigate } from 'react-router-dom';
 import { getpostdetails, likepost } from '../../../actions/Post';
 import Img from '../../LazyLoadImages/Img';
-
 const Postbox = ({ data,user }) => {
     const [creater, setcreater] = useState(null);
     const [postdata,setpostdata]=useState(data);
-    const [check,setcheck]=useState(data?.likeCount?.includes(user?.result?.username));
     const [iscomment,setiscomment]=useState(false);
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(getuserdetails(setcreater, data?.username));
+        dispatch(getuserbyid( data?.username,setcreater));
     }, [])
 
     
     const navigate=useNavigate();
     const handlelike=()=>{
         // console.log(user)
-        dispatch(likepost(user.result,data._id,setpostdata));
+        dispatch(likepost(user,data._id,setpostdata));
         // dispatch(getpostdetails(data?._id,setpostdata));
     }
     return (
@@ -43,7 +41,7 @@ const Postbox = ({ data,user }) => {
 
                     </div>
                     {postdata?.selectedfile && (
-                        <div className=' w-full ms:h-[400px] mms:h-[380px] xs:h-[370px] h-[310px]'>
+                        <div className=' w-full ms:h-[400px] mms:h-[380px] xs:h-[370px] h-[310px]' onClick={()=> navigate(`/Post/${data._id}`)}>
                         <Img className={`ms:h-[400px] mms:h-[380px] xs:h-[370px] h-[310px] rounded-0 shadow-md w-full object-fit `} src={data?.selectedfile}  />
                         </div>
                     )}
@@ -58,7 +56,7 @@ const Postbox = ({ data,user }) => {
                                 <span className='flex justify-center items-center'>
                                    { postdata?.likeCount?.length}
                                 </span>
-                                <HeartSymbol check={postdata?.likeCount?.includes(user?.result?.username)}/>
+                                <HeartSymbol check={postdata?.likeCount?.includes(user?.username)}/>
                         </span>
                         <span className='h-full flex justify-center items-center '>
                                 <AiOutlineComment onClick={()=>setiscomment((prev)=>!prev)} className='h-[40px] w-[40px]'/>

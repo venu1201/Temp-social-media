@@ -1,7 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {avatar} from '../../../assets/index'
 import LoadingSpinner from '../../../components/Spinner/Spinner';
-const Notificationbox = ({ name,userdata,item, firstname, lastname,handleclick,handle,picture }) => {
+import { acceptanddeleteuser, getuserbyid } from '../../../actions/Auth';
+import { useDispatch } from 'react-redux';
+const Notificationbox = ({ name,userdata,item, firstname, lastname,handle,picture }) => {
+    const dispatch=useDispatch();
+    const [peopledata,setpeopledata]=useState(null);
+    useEffect(() => {      
+        dispatch(getuserbyid(item,setpeopledata));      
+    }, [])
+    const handleclick = (type, touser) => {
+        const obj = { username: userdata.username, method: type };
+    
+        dispatch(acceptanddeleteuser(obj, touser)).then(()=>{
+            setloading1(false);
+        setloading2(false);
+        setloading3(false);
+        })
+        
+    }
     const handleBothFunctions = (type, name) => {
         if(type==='Accept')
             setloading1(true)
@@ -9,14 +26,12 @@ const Notificationbox = ({ name,userdata,item, firstname, lastname,handleclick,h
             setloading2(true)
         else
             setloading3(true)
-        handleclick(type, name);
+        handleclick(type, peopledata?.username);
         
         
         
       };
-      console.log(item)
-      const [isPresent,setisPresent]=useState( userdata.following.includes(name) || item.pending.includes(userdata?.username))
-      console.log(userdata)
+      const [isPresent,setisPresent]=useState( userdata.following.includes(peopledata?.username) || peopledata?.pending?.includes(userdata?.username))
       const [loading1,setloading1]=useState(false)
       const [loading2,setloading2]=useState(false)
       const [loading3,setloading3]=useState(false)
@@ -24,11 +39,11 @@ const Notificationbox = ({ name,userdata,item, firstname, lastname,handleclick,h
         <div className=' mt-4 px-5 flex w-full h-[82px] justify-between'>
             <div className='flex h-full justify-center gap-5 '>
                 <div className='h-full w-[110px] '>
-                    <img className='h-full rounded-md w-full  object-fill' src={picture || avatar } alt="" />
+                    <img className='h-full rounded-md w-full  object-fill' src={peopledata?.profilepicture || avatar } alt="" />
                 </div>
                 <div className='flex items-center gap-3  w-full h-full'>
                     <div className='text-[25px] flex mt-3'>
-                        <span>{name}</span>
+                        <span>{peopledata?.username}</span>
                     </div>
                     <div className='flex text-dimWhite text-[20px] mt-3'>
                         <span>has requested you to Add...! </span>
@@ -36,7 +51,7 @@ const Notificationbox = ({ name,userdata,item, firstname, lastname,handleclick,h
                 </div>
             </div>
             <div className='flex justify-center items-center gap-5'>
-                <button onClick={()=>handleBothFunctions('Accept',name)} className='w-[70px] flex justify-center items-center h-[50px] bg-blue-700 rounded-lg cursor-pointer'>
+                <button onClick={()=>handleBothFunctions('Accept',peopledata?.username)} className='w-[70px] flex justify-center items-center h-[50px] bg-blue-700 rounded-lg cursor-pointer'>
                     {loading1===true? (
                         <LoadingSpinner/>
                     ):
@@ -44,7 +59,7 @@ const Notificationbox = ({ name,userdata,item, firstname, lastname,handleclick,h
                         <span>Accept</span>
                     )}
                 </button>
-                <button onClick={()=>handleBothFunctions('Delete',name)} className='w-[70px] flex justify-center items-center h-[50px] bg-blue-700 rounded-lg cursor-pointer'>
+                <button onClick={()=>handleBothFunctions('Delete',peopledata?.username)} className='w-[70px] flex justify-center items-center h-[50px] bg-blue-700 rounded-lg cursor-pointer'>
                     {loading2===true? (
                         <LoadingSpinner/>
                     ):
@@ -53,7 +68,7 @@ const Notificationbox = ({ name,userdata,item, firstname, lastname,handleclick,h
                     )}
                 </button>
                 {!isPresent && (
-                    <button onClick={()=>handleBothFunctions('Acceptandaddback',name)} className='w-[110px] flex justify-center items-center h-[50px] bg-blue-700 rounded-lg cursor-pointer'>
+                    <button onClick={()=>handleBothFunctions('Acceptandaddback',peopledata?.username)} className='w-[110px] flex justify-center items-center h-[50px] bg-blue-700 rounded-lg cursor-pointer'>
                     {loading3===true? (
                         <LoadingSpinner/>
                     ):

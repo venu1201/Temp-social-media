@@ -1,79 +1,73 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux';
-import { getuserdetails,getallpendingusers, acceptanddeleteuser } from '../../actions/Auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { getuserdetails, getallpendingusers, acceptanddeleteuser } from '../../actions/Auth';
 import Notificationbox from './Components/Notificationbox';
 import LoadingSpinner from '../../components/Spinner/Spinner';
 
 
-const Notifications = ({handle}) => {
-    const data = JSON.parse(localStorage.getItem('profile'));
-    const [userdata, setuserdata] = useState(null);
-    const [pending,setpending]=useState([]);
-    const dispatch=useDispatch();
-    const [allpendings,setallpendings]=useState([]);
-    const [k,setk]=useState(1);
-    const [loadingpage,setloadingpage]=useState(true);
-    useEffect(() => {
-        dispatch(getuserdetails(setuserdata, data?.result?.username));
-      
-    }, [k])
-    useEffect(() => {
-      if(userdata)
-      {
-        setpending(userdata?.pending);
-        setloadingpage(false);
-      }
-    }, [userdata])
-    
-    useEffect(() => {
-      if(pending?.length>0)
-      {
-        dispatch(getallpendingusers(setallpendings,pending));
-      }
-    }, [pending])
-    
+const Notifications = ({ handle }) => {
+  const data = useSelector((state) => state.authData);
+  const [pending, setpending] = useState([]);
+  const [loadingpage, setloadingpage] = useState(true);
+  // useEffect(() => {
+  //     dispatch(getuserdetails(setuserdata, data?.username));
 
-    const handleclick= (type,touser)=>{
-      const obj={username:data?.result?.username,method:type};
-      
-        dispatch(acceptanddeleteuser(obj,touser)).then(()=>{
-          setk(k=>k+1);
-        
-          
-        });
-      
-      
-
+  // }, [k])
+  useEffect(() => {
+    if (data) {
+      setpending(data?.pending);
+      setloadingpage(false);
     }
-   
-    
+  }, [data])
+
+  // useEffect(() => {
+  //   if(pending?.length>0)
+  //   {
+  //     dispatch(getallpendingusers(setallpendings,pending));
+  //   }
+  // }, [pending])
+
+  // const handleclick = (type, touser) => {
+  //   const obj = { username: data?.result?.username, method: type };
+
+  //   dispatch(acceptanddeleteuser(obj, touser)).then(() => {
+  //     setk(k => k + 1);
+
+
+  //   });
+
+
+
+  // }
+
+
   return (
     <div className=' md:w-[75%]  sm:w-[68%] ss:w-[90%] w-full ssm:w-[74%] ac:w-[78%] font-poppins text-white h-full' >
-      {loadingpage===false ? (
+      {loadingpage === false ? (
         <div className=''>
-            {pending.length>0 ? (
+          {pending.length > 0 ? (
             <div className='mt-10'>
-                {allpendings?.map((item,index)=>(
-                    <div className='flex flex-col'>
-                        <Notificationbox key={index} handle={handle} handleclick={handleclick} name={item?.username} item={item} firstname={item?.firstname} picture={item?.profilepicture} lastname={item?.lastname} userdata={userdata} />
-                       
-                    </div>
-                ))}
+              {pending?.map((item, index) => (
+                <div className='flex flex-col'>
+                  <Notificationbox key={item} handle={handle} item={item} userdata={data} />
+
+                </div>
+              ))}
             </div>
-          ):(
+          ) : (
             <div className='mt-10 p-4 text-[20px] flex justify-center'>
-              No Notifications Yet....Please Come Again 
+              No Notifications Yet....Please Come Again
             </div>
           )}
         </div>
-          
-      ):(
-          <div className='flex justify-center mt-10'>
-              <LoadingSpinner/>
-          </div>
+
+      ) : (
+        <div className='flex justify-center mt-10'>
+          <LoadingSpinner />
+        </div>
       )}
-      
-        
+
+
     </div>
   )
 }

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { logo2 } from '../../assets'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CreatePost from '../postssection/components/CreatePost';
-import { getuserdetails } from '../../actions/Auth';
+import { getselfdata, getuserdetails } from '../../actions/Auth';
 import { AiFillHome } from "react-icons/ai";
 import { BsFillRocketTakeoffFill, BsFillChatDotsFill } from "react-icons/bs";
 import { MdNotificationsActive } from "react-icons/md";
@@ -15,20 +15,32 @@ const Navbar = ({ user }) => {
   const [active, setactive] = useState(0);
   const remove = [2, 3, 6];
   const iconarray = [<AiFillHome className='h-9 w-9  sm:h-5 sm:w-5' />, <BsFillRocketTakeoffFill className='h-9 w-9 sm:h-5 sm:w-5' />, <BsFillChatDotsFill className='h-9 w-9 sm:h-5 sm:w-5' />, <MdNotificationsActive className='h-9 w-9 sm:h-5 sm:w-5' />, <CgAddR className='h-9 w-9 sm:h-5 sm:w-5' />, <CgProfile className='h-9 w-9 sm:h-5 sm:w-5' />, <FiSettings className='h-9 w-9 sm:h-5 sm:w-5' />]
+
   const [createpost, setcreatepost] = useState(false);
 
   const navigate = useNavigate();
-  const localdata = JSON.parse(localStorage.getItem('profile'));
+  const userdata1=useSelector((state)=>state.authData);
   const location = useLocation();
-  const [userdata, setuserdata] = useState(null);
   useEffect(() => {
-    dispatch(getuserdetails(setuserdata, localdata?.result?.username));
-  }, [])
+    dispatch(getselfdata(userdata1.username));
+  }, [location])
+  
+  // useEffect(() => {
+  //   dispatch(getuserdetails(setuserdata, userdata1?.username));
+  // }, [])
   useEffect(() => {
     if (location.pathname.includes('/Profile')) {
       setactive(5);
     }
-  }, [])
+    if (location.pathname.includes('/Notifications')) {
+      setactive(3);
+    }
+    if (location.pathname.includes('/Settings')) {
+      setactive(6);
+    }
+    
+
+  }, [location])
   const handleclick = (index) => {
     setactive(index);
 
@@ -38,7 +50,7 @@ const Navbar = ({ user }) => {
     }
 
     if (array[index] === 'Profile') {
-      navigate(`/Profile/${userdata?.username}`)
+      navigate(`/Profile/${userdata1?.username}`)
 
     }
     if (array[index] === 'Home') {
@@ -84,23 +96,23 @@ const Navbar = ({ user }) => {
 
               </span>
               {item === 'Notifications' ? (
-                userdata?.pending?.length === 0 ? (
+                userdata1?.pending?.length === 0 ? (
                   <div className='hidden'>
 
                   </div>
                 ) : (
                   <span
-                    className={`${userdata?.pending?.length!==0? "":""} w-[25px] sm:flex hidden justify-center items-center text-[15px] h-[25px] rounded-full`}
+                    className={`${userdata1?.pending?.length !== 0 ? "" : ""} w-[25px] sm:flex hidden justify-center items-center text-[15px] h-[25px] rounded-full`}
                   >
-                    {userdata?.pending?.length}
+                    {userdata1?.pending?.length}
                   </span>
-               
+
                 )
-              ):(
+              ) : (
                 <div className='hidden'>
 
                 </div>
-              ) }
+              )}
 
             </li>
           ))}

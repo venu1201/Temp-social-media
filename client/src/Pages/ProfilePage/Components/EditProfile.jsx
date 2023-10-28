@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { VscChromeClose } from 'react-icons/vsc';
 import { avatar } from '../../../assets';
 import { updateuserdetails } from '../../../actions/Auth';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { client, urlFor } from '../../../Client';
-const EditProfile = ({ setedit,userdetails }) => {
+const EditProfile = ({ setedit }) => {
+    const userdetails=useSelector((state)=>state.authData);
+
     const [selectedImage, setSelectedImage] = useState(userdetails?.profilepicture);
-    console.log(userdetails)
     const [editdata,seteditdata]=useState({firstname:userdetails?.firstname,lastname:userdetails?.lastname,bio:userdetails?.bio,selectedfile:null});
     const [next, setnext] = useState(true)
     const handleImageChange =async (e) => {
@@ -36,16 +37,18 @@ const EditProfile = ({ setedit,userdetails }) => {
    
     
     const handlechange=(e)=>{
-        console.log(e.target.name)
         seteditdata({...editdata,[e.target.name]:e.target.value});
     }
     const dispatch=useDispatch();
     const handlesubmit=(e)=>{
         e.preventDefault();
-      
+        setnext(false);
         console.log(editdata);
-        dispatch(updateuserdetails(editdata,userdetails?.username));
-        setedit(false);
+        dispatch(updateuserdetails(editdata,userdetails?.username)).then(()=>{
+            setnext(true);
+            setedit(false);
+        });
+        // setedit(false);
        
         
     }
@@ -92,7 +95,7 @@ const EditProfile = ({ setedit,userdetails }) => {
                         </span>
                       
                     ):(
-                        <span>
+                        <span className='cursor-wait'>
                               Wait...
                         </span>
                     )}

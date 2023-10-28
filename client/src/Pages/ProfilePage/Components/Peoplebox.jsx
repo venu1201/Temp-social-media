@@ -2,52 +2,34 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import LoadingSpinner from '../../../components/Spinner/Spinner'
-import { getuserdetails } from '../../../actions/Auth'
+import { getuserbyid, getuserdetails } from '../../../actions/Auth'
 import { remove, requesting } from '../../../actions/user'
 import { avatar } from '../../../assets'
+import { profile_data } from '../../../reducers'
+const Peoplebox = ({ data, b, edit, type,userid,setuserdetails ,changeremove, setblur, setdefault }) => {
 
-const Peoplebox = ({ data,b,edit, type,changeremove, setblur, setdefault }) => {
-    const userdata = JSON.parse(localStorage.getItem('profile'));
-    const [Tdata, setTdata] = useState(null)
-
+    // declarations
     const dispatch = useDispatch();
+    const userdata = useSelector((state)=>state.authData);
+    
 
-    useEffect(() => {
-        dispatch(getuserdetails(setTdata, data));
-    }, [])
-    const [data2, setdata2] = useState()
-    const [temp, settemp] = useState(1)
+    // states
+    const [Tdata, setTdata] = useState(null)
     const [value, setvalue] = useState("ADD")
     const [showbtn, setshowbtn] = useState(true);
-    useEffect(() => {
-        if (Tdata) {
-            if (userdata.result.username === Tdata?.username) {
-                setshowbtn(false);
-            }
-            else if (Tdata.followers.includes(userdata?.result?.username)) {
-                setvalue("ADDED")
-            }
-            else if (!Tdata.followers.includes(userdata?.result?.username) && Tdata.pending.includes(userdata?.result?.username)) {
-                setvalue("Pending");
-            }
-            else if (!Tdata.followers.includes(userdata?.result?.username) && !Tdata.pending.includes(userdata?.result?.username)) {
-                setvalue("ADD");
-            }
-
-
-
-        }
-    }, [Tdata])
-
-
     const [confirm, setconfirm] = useState(false);
-    const handleremove=()=>{
+    const [yes, setyes] = useState(false);
+    const [temp1,settemp1]=useState(null);
+    const [loading,setloading]=useState(false);
+
+
+    // functions
+    const handleremove = () => {
         setconfirm(true);
-        setblur(true);
+
     }
     const handleclick = (text) => {
-        if(value==='ADDED')
-        {
+        if (value === 'ADDED') {
 
         }
         else if (text === 'remove') {
@@ -56,52 +38,75 @@ const Peoplebox = ({ data,b,edit, type,changeremove, setblur, setdefault }) => {
         }
         else {
             setvalue('loading')
-            dispatch(requesting(Tdata?.username, userdata?.result))
-                .then(() => {
-
-                    dispatch(getuserdetails(setdata2, Tdata?.username));
-                    settemp(temp + 1);
-                })
-                .catch(error => {
-                    console.error("Error occurred:", error);
-                });
+            dispatch(requesting(Tdata?.username, userdata))
+                
         }
 
     };
-    useEffect(() => {
-        if (data2) {
-            const pending = data2?.pending || [];
-            setvalue(pending.includes(userdata?.result?.username) ? 'Pending' : 'ADD');
-
-        }
-
-    }, [data2?.pending]);
-    const handleswitch = () => {
-        setdefault((prev) => !prev);
-        navigate(`/Profile/${Tdata?.username}`)
-    }
-    const [yes, setyes] = useState(false);
-    const handleyes = () => {
-        setyes(!yes);
-        console.log("remove")
-
-    }
-    const removeuser = (type)=>{
-        
-         dispatch(remove(type,userdata.result.username,Tdata)).then(()=>{
-            b((prev)=>!prev);
-            setconfirm(null);
-            setyes(null);
-            console.log(yes,confirm)
-        });
-        b((prev)=>!prev);
+    const removeuser = (type) => {
+        setloading(true);
         setconfirm(null);
         setyes(null);
-        console.log(yes,confirm)
-       
+        dispatch(remove(type, userdata.username, Tdata,setuserdetails)).then(() => {
+            dispatch(getuserbyid(userdata.username,settemp1)).then(()=>{
+                setloading(false);
+                
+               
+
+            });
+            
+            // setconfirm(null);
+            // setyes(null);
+            // console.log(yes, confirm)
+        });
         
-        
+      
     }
+    const handleswitch = () => {
+        setdefault((prev)=>!prev)
+        navigate(`/Profile/${Tdata?.username}`)
+    }
+    const handleyes = () => {
+        setyes(!yes);
+
+    }
+
+    // useeffects
+    useEffect(() => {
+        dispatch(getuserbyid(data,setTdata));
+    }, [])
+
+    useEffect(() => {
+        if (Tdata) {
+            if (userdata.username === Tdata?.username) {
+                setshowbtn(false);
+            }
+            else if(userdata?.followers?.includes(Tdata?.username) && Tdata?.followers?.includes(userdata?.username)) {
+                setvalue("ADDED");
+            }
+            else if(Tdata?.pending?.includes(userdata.username))
+            {
+                setvalue("Pending")
+            }
+            else if((!userdata?.followers?.includes(Tdata?.username) && !Tdata?.followers?.includes(userdata.username)))
+            {
+                setvalue("ADD");
+            }
+              
+        }
+    }, [Tdata])
+    
+    // useEffect(() => {
+    //     if (data2) {
+    //         console.log("heeeeeeeeee")
+    //         const pending = data2?.pending || [];
+    //         setvalue(pending.includes(userdata?.username) ? 'Pending' : 'ADD');
+
+    //     }
+
+    // }, [data2?.pending]);
+   
+   
     const navigate = useNavigate();
     return (
 
@@ -126,7 +131,7 @@ const Peoplebox = ({ data,b,edit, type,changeremove, setblur, setdefault }) => {
                                     value
                                 )}
                             </button>
-                            <button onClick={handleremove} className={`text-blue-100 ms:text-[17px] text-[13px] underline ${edit===true? "":"hidden"}`}>
+                            <button onClick={handleremove} className={`text-blue-100 ms:text-[17px] text-[13px] underline ${edit === true ? "" : "hidden"}`}>
                                 remove
                             </button>
                         </div>
@@ -145,11 +150,22 @@ const Peoplebox = ({ data,b,edit, type,changeremove, setblur, setdefault }) => {
                         )
 
                     }
+                    {
+                        loading && (
+                            <div className='absolute -top-32 flex justify-center items-center z-[999999] h-full w-full '>
+                                <div className='text-white justify-center items-center bg-black h-[150px] w-[400px] rounded-xl flex flex-col  gap-4'>
+                                    <LoadingSpinner/>
+                                </div>
+                            </div>
+                        )
+
+                    }
                     {yes && (
                         <div className='absolute -top-32     flex justify-center items-center   z-[999999] h-full w-full '>
-                            <div className='text-white relative pt-8 items-center bg-black h-[150px] w-[400px] rounded-xl flex flex-col  gap-4'>
+                           
+                                <div className='text-white relative pt-8 items-center bg-black h-[150px] w-[400px] rounded-xl flex flex-col  gap-4'>
                                 <h3> Remove As...</h3>
-                                <span onClick={()=>setyes((prev)=>!prev)} className='absolute right-10'>X</span>
+                                <span onClick={() => setyes((prev) => !prev)} className='absolute right-10'>X</span>
                                 <div className='flex justify-center items-center gap-5'>
                                     <button onClick={() => removeuser("follower")} className='bg-blue-600 w-[100px] h-[30px]'>Follower</button>
                                     <button onClick={() => removeuser("following")} className='bg-blue-600 w-[100px] h-[30px]'>Following</button>
@@ -157,6 +173,8 @@ const Peoplebox = ({ data,b,edit, type,changeremove, setblur, setdefault }) => {
 
                                 </div>
                             </div>
+                           
+                            
                         </div>
                     )}
 

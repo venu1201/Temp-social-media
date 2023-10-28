@@ -6,16 +6,40 @@ import { Provider } from 'react-redux';
 import { legacy_createStore as createStore} from 'redux'
 import { applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import {configureStore} from '@reduxjs/toolkit';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import { PersistGate } from "redux-persist/integration/react";
 
+const persistConfig = { key: "root", storage, version: 1 };
+import reducers from './reducers';
+const persistedReducer = persistReducer(persistConfig, reducers);
 
-import { reducers } from './reducers';
-const store = createStore(reducers, compose(applyMiddleware(thunk)));
-const data=JSON.parse(localStorage.getItem('profile'));
+const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
+// const data=JSON.parse(localStorage.getItem('profile'));
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    
-      <App user={data} />
+    <PersistGate loading={null} persistor={persistStore(store)}>
+      <App user={null} />
+
+    </PersistGate>
     
      
   </Provider>,
